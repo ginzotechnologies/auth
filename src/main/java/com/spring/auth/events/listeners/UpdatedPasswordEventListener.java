@@ -8,22 +8,26 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-/** @author diegotobalina created on 19/06/2020 */
+/**
+ * @author diegotobalina created on 19/06/2020
+ */
 @CustomEventListener
 @AllArgsConstructor
 public class UpdatedPasswordEventListener {
 
-  private DeleteSessionPort deleteSessionPort;
+    private final DeleteSessionPort deleteSessionPort;
 
-  /** When user change the password all sessions should be removed */
-  @Async
-  @TransactionalEventListener
-  public void eventListener(UpdatedPasswordEvent updatedPasswordEvent) {
-    User user = updatedPasswordEvent.getSource();
-    deleteSessions(user);
-  }
+    /**
+     * When user change the password all sessions should be removed
+     */
+    @Async
+    @TransactionalEventListener
+    public void eventListener(UpdatedPasswordEvent updatedPasswordEvent) {
+        User user = updatedPasswordEvent.getSource();
+        deleteSessions(user);
+    }
 
-  private void deleteSessions(User user) {
-    deleteSessionPort.deleteByUserId(user.getId());
-  }
+    private void deleteSessions(User user) {
+        deleteSessionPort.deleteByUserId(user.getId());
+    }
 }

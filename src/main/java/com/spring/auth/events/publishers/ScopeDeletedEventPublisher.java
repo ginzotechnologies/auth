@@ -6,18 +6,20 @@ import com.spring.auth.events.ports.PublishScopeDeletedEventPort;
 import com.spring.auth.scope.domain.Scope;
 import org.springframework.context.ApplicationEventPublisher;
 
-/** @author diegotobalina created on 19/06/2020 */
+/**
+ * @author diegotobalina created on 19/06/2020
+ */
 @CustomEventPublisher
 public class ScopeDeletedEventPublisher extends EventPublisher
-    implements PublishScopeDeletedEventPort {
+        implements PublishScopeDeletedEventPort {
 
-  public ScopeDeletedEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-    super(applicationEventPublisher);
-  }
+    public ScopeDeletedEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        super(applicationEventPublisher);
+    }
 
-  @Override
-  public void publish(Scope scope) {
-    ScopeDeletedEvent scopeDeletedEvent = new ScopeDeletedEvent(scope);
-    this.applicationEventPublisher.publishEvent(scopeDeletedEvent);
-  }
+    @Override
+    public void publish(Scope scope) {
+        ScopeDeletedEvent scopeDeletedEvent = new ScopeDeletedEvent(scope);
+        this.applicationEventPublisher.publishEvent(scopeDeletedEvent);
+    }
 }

@@ -12,21 +12,23 @@ import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
-/** @author diegotobalina created on 31/07/2020 */
+/**
+ * @author diegotobalina created on 31/07/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class UpdateClientInputDto {
-  @ApiModelProperty(example = "[http://localhost]")
-  private List<@URL String> allowedUrls = new ArrayList<>();
+    @ApiModelProperty(example = "[http://localhost]")
+    private List<@URL String> allowedUrls = new ArrayList<>();
 
-  @ApiModelProperty(example = "[http://localhost]")
-  private List<@URL String> allowedCallbackUrls = new ArrayList<>();
+    @ApiModelProperty(example = "[http://localhost]")
+    private List<@URL String> allowedCallbackUrls = new ArrayList<>();
 
-  @Min(0)
-  @Max(86400000)
-  private long expirationTokenTime = 0l;
+    @Min(0)
+    @Max(86400000)
+    private long expirationTokenTime = 0l;
 
-  private String googleClientId = "";
+    private String googleClientId = "";
 }

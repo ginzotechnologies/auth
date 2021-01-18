@@ -10,10 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /** @author diegotobalina created on 24/06/2020 */
 public class Instancer {
@@ -23,7 +20,7 @@ public class Instancer {
   @SneakyThrows
   public User user() {
     User user = new User();
-    objectFiller.replace(user, "id", "id");
+    objectFiller.replace(user, "id", Long.parseLong("1"));
     objectFiller.replace(user, "username", "username");
     objectFiller.replace(user, "email", "email@user.com");
     objectFiller.replace(user, "password", "password");
@@ -40,7 +37,7 @@ public class Instancer {
   @SneakyThrows
   public Role role() {
     Role role = new Role();
-    objectFiller.replace(role, "id", "id");
+    objectFiller.replace(role, "id", Long.parseLong("1"));
     objectFiller.replace(role, "name", "name");
     objectFiller.replace(role, "description", "description");
     objectFiller.replace(role, "value", "value");
@@ -51,7 +48,7 @@ public class Instancer {
   @SneakyThrows
   public Scope scope() {
     Scope scope = new Scope();
-    objectFiller.replace(scope, "id", "scope");
+    objectFiller.replace(scope, "id", Long.parseLong("1"));
     objectFiller.replace(scope, "name", "name");
     objectFiller.replace(scope, "description", "description");
     objectFiller.replace(scope, "value", "value");
@@ -61,8 +58,8 @@ public class Instancer {
   @SneakyThrows
   public Client client() {
     Client client = new Client();
-    objectFiller.replace(client, "id", "client");
-    objectFiller.replace(client, "clientId", "clientId");
+    objectFiller.replace(client, "id", Long.parseLong("1"));
+    objectFiller.replace(client, "clientId", Long.parseLong("1"));
     objectFiller.replace(client, "clientSecret", "clientSecret");
     objectFiller.replace(client, "creationDate", new Date());
     objectFiller.replace(client, "allowedUrls", new ArrayList<>());
@@ -75,7 +72,7 @@ public class Instancer {
   @SneakyThrows
   public Session session() {
     Session session = new Session();
-    objectFiller.replace(session, "id", "session_id");
+    objectFiller.replace(session, "id", Long.parseLong("1"));
     objectFiller.replace(session, "token", "session_token");
     objectFiller.replace(session, "issuedAt", new Date());
     objectFiller.replace(session, "expiration", new Date());

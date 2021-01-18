@@ -10,13 +10,19 @@ import lombok.ToString;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class RegisterInputDto {
-  @UsernameConstraint private String username; // username for the new user
-  @Email @NotNull private String email; // email for the new user
-  @PasswordConstraint private String password; // password for the new user
+    @UsernameConstraint
+    private String username; // username for the new user
+    @Email
+    @NotNull
+    private String email; // email for the new user
+    @PasswordConstraint
+    private String password; // password for the new user
 }

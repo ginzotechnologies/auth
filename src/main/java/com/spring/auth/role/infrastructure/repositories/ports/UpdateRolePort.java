@@ -5,8 +5,11 @@ import com.spring.auth.role.domain.Role;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface UpdateRolePort {
-  Role update(Role role) throws DuplicatedKeyException;
-  List<Role> updateAll(List<Role> roles) throws DuplicatedKeyException;
+    Role update(Role role) throws DuplicatedKeyException;
+
+    List<Role> updateAll(List<Role> roles) throws DuplicatedKeyException;
 }

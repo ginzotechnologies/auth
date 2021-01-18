@@ -1,10 +1,10 @@
 package com.spring.auth.client.infrastructure.repositories;
 
-import com.spring.auth.client.infrastructure.repositories.ports.FindClientPort;
 import com.spring.auth.client.domain.Client;
 import com.spring.auth.client.domain.ClientJpa;
 import com.spring.auth.client.domain.ClientMapper;
 import com.spring.auth.client.infrastructure.repositories.jpa.ClientRepositoryJpa;
+import com.spring.auth.client.infrastructure.repositories.ports.FindClientPort;
 import com.spring.auth.exceptions.application.NotFoundException;
 import com.spring.auth.util.SearchUtil;
 import lombok.AllArgsConstructor;
@@ -22,45 +22,44 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class FindClientRepository implements FindClientPort {
 
-  private ClientRepositoryJpa clientRepositoryJpa;
+    private final ClientRepositoryJpa clientRepositoryJpa;
 
-  @Override
-  public Page<Client> search(String id, String clientId, int page, int size) {
-    ClientJpa clientJpa = new ClientJpa();
-    clientJpa.setId(id);
-    clientJpa.setClientId(clientId);
+    @Override
+    public Page<Client> search(Long id, Long clientId, int page, int size) {
+        ClientJpa clientJpa = new ClientJpa();
+        clientJpa.setId(id);
+        clientJpa.setClientId(clientId);
 
-    List<String> wantedFields = List.of("id", "clientId");
+        List<String> wantedFields = List.of("id", "clientId");
 
-    Example<ClientJpa> example =
-        (Example<ClientJpa>) SearchUtil.getExample(clientJpa, wantedFields);
-    PageRequest pageRequest = PageRequest.of(page, size);
-    Page<ClientJpa> pagedResult = clientRepositoryJpa.findAll(example, pageRequest);
-    return new PageImpl<>(
-        ClientMapper.parseClientJpaList(pagedResult.getContent()),
-        pageRequest,
-        pagedResult.getTotalElements());
-  }
+        Example<ClientJpa> example =
+                (Example<ClientJpa>) SearchUtil.getExample(clientJpa, wantedFields);
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ClientJpa> pagedResult = clientRepositoryJpa.findAll(example, pageRequest);
+        return new PageImpl<>(
+                ClientMapper.parseClientJpaList(pagedResult.getContent()),
+                pageRequest,
+                pagedResult.getTotalElements());
+    }
 
-  @Override
-  public Client findById(String clientId) throws NotFoundException {
-    Optional<ClientJpa> optional = clientRepositoryJpa.findById(clientId);
-    ClientJpa clientJpa =
-        optional.orElseThrow(() -> new NotFoundException("client not found by id: " + clientId));
-    return ClientMapper.parse(clientJpa);
-  }
+    @Override
+    public Client findById(Long clientId) throws NotFoundException {
+        Optional<ClientJpa> optional = clientRepositoryJpa.findById(clientId);
+        ClientJpa clientJpa = optional.orElseThrow(() -> new NotFoundException("client not found by id: " + clientId));
+        return ClientMapper.parse(clientJpa);
+    }
 
-  @Override
-  public Client findByClientId(String clientId) throws NotFoundException {
-    Optional<ClientJpa> optional = clientRepositoryJpa.findByClientId(clientId);
-    ClientJpa clientJpa =
-        optional.orElseThrow(() -> new NotFoundException("client not found by id: " + clientId));
-    return ClientMapper.parse(clientJpa);
-  }
+    @Override
+    public Client findByClientId(Long clientId) throws NotFoundException {
+        Optional<ClientJpa> optional = clientRepositoryJpa.findByClientId(clientId);
+        ClientJpa clientJpa =
+                optional.orElseThrow(() -> new NotFoundException("client not found by id: " + clientId));
+        return ClientMapper.parse(clientJpa);
+    }
 
-  @Override
-  public List<Client> findAll() {
-    List<ClientJpa> all = clientRepositoryJpa.findAll();
-    return all.stream().map(ClientMapper::parse).collect(Collectors.toList());
-  }
+    @Override
+    public List<Client> findAll() {
+        List<ClientJpa> all = clientRepositoryJpa.findAll();
+        return all.stream().map(ClientMapper::parse).collect(Collectors.toList());
+    }
 }

@@ -5,7 +5,9 @@ import com.spring.auth.role.domain.Role;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface CheckRolesConstraintsPort {
-  void check(List<Role> roles) throws DuplicatedKeyException;
+    void check(List<Role> roles) throws DuplicatedKeyException;
 }

@@ -23,32 +23,34 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @RoleController
 @AllArgsConstructor
 @Validated
 public class AddScopesToRoleController {
 
-  private AddScopesToRolePort addScopesToRolePort;
+    private final AddScopesToRolePort addScopesToRolePort;
 
-  @ApiOperation(value = "Add Scopes", notes = "Añade scopes a un role")
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping("/{roleId}/scopes")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
-  public AddScopesToRoleOutputDto add(
-      @PathVariable @NotEmpty String roleId, // todo: validate roleId format
-      @RequestBody @Valid AddScopesToRoleInputDto addScopesToRoleInputDto)
-      throws DuplicatedKeyException, NotFoundException {
-    List<String> scopes = addScopesToRoleInputDto.getScopes();
-    Role roleWithScopes = addScopesToRolePort.add(roleId, scopes);
-    return new AddScopesToRoleOutputDto(roleWithScopes);
-  }
+    @ApiOperation(value = "Add Scopes", notes = "Añade scopes a un role")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{roleId}/scopes")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
+    public AddScopesToRoleOutputDto add(
+            @PathVariable @NotEmpty Long roleId, // todo: validate roleId format
+            @RequestBody @Valid AddScopesToRoleInputDto addScopesToRoleInputDto)
+            throws DuplicatedKeyException, NotFoundException {
+        List<Long> scopes = addScopesToRoleInputDto.getScopes();
+        Role roleWithScopes = addScopesToRolePort.add(roleId, scopes);
+        return new AddScopesToRoleOutputDto(roleWithScopes);
+    }
 }

@@ -9,35 +9,37 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
-  @Override
-  public boolean hasPermission(
-      Authentication authentication, Object accessType, Object permission) {
-    String requiredPermission = String.valueOf(permission);
-    List<Scope> validScopes = getValidScopes(authentication, requiredPermission);
-    return !validScopes.isEmpty();
-  }
+    @Override
+    public boolean hasPermission(
+            Authentication authentication, Object accessType, Object permission) {
+        String requiredPermission = String.valueOf(permission);
+        List<Scope> validScopes = getValidScopes(authentication, requiredPermission);
+        return !validScopes.isEmpty();
+    }
 
-  private List<Scope> getValidScopes(Authentication authentication, String requiredPermission) {
-    List<Scope> scopes = (List<Scope>) authentication.getCredentials();
-    List<Scope> validScopes = new ArrayList<>();
-    for (Scope scope : scopes) if (isValidScope(requiredPermission, scope)) validScopes.add(scope);
-    return validScopes;
-  }
+    private List<Scope> getValidScopes(Authentication authentication, String requiredPermission) {
+        List<Scope> scopes = (List<Scope>) authentication.getCredentials();
+        List<Scope> validScopes = new ArrayList<>();
+        for (Scope scope : scopes) if (isValidScope(requiredPermission, scope)) validScopes.add(scope);
+        return validScopes;
+    }
 
-  private boolean isValidScope(String requiredPermission, Scope scope) {
-    return requiredPermission.startsWith(scope.getValue());
-  }
+    private boolean isValidScope(String requiredPermission, Scope scope) {
+        return requiredPermission.startsWith(scope.getValue());
+    }
 
-  @Override
-  public boolean hasPermission(
-      Authentication authentication,
-      Serializable serializable,
-      String targetType,
-      Object permission) {
-    return false;
-  }
+    @Override
+    public boolean hasPermission(
+            Authentication authentication,
+            Serializable serializable,
+            String targetType,
+            Object permission) {
+        return false;
+    }
 }

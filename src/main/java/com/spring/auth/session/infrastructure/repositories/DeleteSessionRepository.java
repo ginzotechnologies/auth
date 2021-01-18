@@ -7,35 +7,33 @@ import com.spring.auth.session.infrastructure.repositories.jpa.SessionRepository
 import com.spring.auth.session.infrastructure.repositories.ports.DeleteSessionPort;
 import com.spring.auth.session.infrastructure.repositories.ports.FindSessionPort;
 import lombok.AllArgsConstructor;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Repository
 @AllArgsConstructor
 public class DeleteSessionRepository implements DeleteSessionPort {
 
-  private SessionRepositoryJpa sessionRepositoryJpa;
-  private FindSessionPort findSessionPort;
-  private MongoTemplate mongoTemplate;
+    private final SessionRepositoryJpa sessionRepositoryJpa;
+    private final FindSessionPort findSessionPort;
 
-  @Override
-  public void deleteByUserId(String userId) {
-    Query query = new Query();
-    query.addCriteria(Criteria.where("userId").is(userId));
-    mongoTemplate.remove(query, SessionJpa.class);
-  }
+    @Override
+    public void deleteByUserId(Long userId) {
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("userId").is(userId));
+//        mongoTemplate.remove(query, SessionJpa.class);
+    }
 
-  @Override
-  public void delete(final Session session) {
-    this.sessionRepositoryJpa.deleteById(session.getId());
-  }
+    @Override
+    public void delete(final Session session) {
+        this.sessionRepositoryJpa.deleteById(session.getId().toString());
+    }
 
-  @Override
-  public void delete(String token) throws NotFoundException {
-    Session session = findSessionPort.findByToken(token);
-    this.delete(session);
-  }
+    @Override
+    public void delete(String token) throws NotFoundException {
+        Session session = findSessionPort.findByToken(token);
+        this.delete(session);
+    }
 }

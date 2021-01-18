@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Random;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +35,7 @@ class CreateUserRepositoryTest {
   void create() throws IllegalAccessException, DuplicatedKeyException {
     ObjectFiller objectFiller = new ObjectFiller();
     Instancer instancer = new Instancer();
+    Long randomId = new Random().nextLong();
 
     CheckUsersConstraintsPort spy = Mockito.spy(checkUsersConstraintsPort);
     Mockito.doNothing().when(spy).check(Mockito.anyList());
@@ -41,7 +44,7 @@ class CreateUserRepositoryTest {
         .then(
             invocation -> {
               UserJpa userJpa = invocation.getArgument(0);
-              objectFiller.replace(userJpa, "id", "generated_id");
+              objectFiller.replace(userJpa, "id", randomId);
               return userJpa;
             });
 
@@ -51,7 +54,7 @@ class CreateUserRepositoryTest {
     User response = repository.create(user);
 
     User expectedResponse = user;
-    objectFiller.replace(expectedResponse, "id", "generated_id");
+    objectFiller.replace(expectedResponse, "id", randomId);
 
     Assertions.assertEquals(user.toString(), response.toString());
   }

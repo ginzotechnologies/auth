@@ -1,29 +1,31 @@
 package com.spring.auth.session.infrastructure.repositories;
 
-import com.spring.auth.session.infrastructure.repositories.ports.RefreshSessionPort;
 import com.spring.auth.session.domain.Session;
 import com.spring.auth.session.domain.SessionJpa;
 import com.spring.auth.session.domain.SessionMapper;
 import com.spring.auth.session.infrastructure.repositories.jpa.SessionRepositoryJpa;
+import com.spring.auth.session.infrastructure.repositories.ports.RefreshSessionPort;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Repository
 @AllArgsConstructor
 public class RefreshSessionRepository implements RefreshSessionPort {
 
-  private SessionRepositoryJpa sessionRepositoryJpa;
+    private final SessionRepositoryJpa sessionRepositoryJpa;
 
-  @Override
-  public void refresh(Session session) {
-    session.refresh(); // todo: check possible session modifications bug
-    saveSession(session);
-  }
+    @Override
+    public void refresh(Session session) {
+        session.refresh(); // todo: check possible session modifications bug
+        saveSession(session);
+    }
 
-  private void saveSession(Session session) {
-    SessionJpa sessionJpa = SessionMapper.parse(session);
-    SessionJpa sessionJpaRefreshed = sessionRepositoryJpa.save(sessionJpa);
-    SessionMapper.parse(sessionJpaRefreshed);
-  }
+    private void saveSession(Session session) {
+        SessionJpa sessionJpa = SessionMapper.parse(session);
+        SessionJpa sessionJpaRefreshed = sessionRepositoryJpa.save(sessionJpa);
+        SessionMapper.parse(sessionJpaRefreshed);
+    }
 }

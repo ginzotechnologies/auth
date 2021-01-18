@@ -11,27 +11,29 @@ import lombok.ToString;
 import javax.validation.constraints.Email;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class LoginInputDto {
-  @UsernameNullableConstraint
-  @ApiModelProperty(example = "admin")
-  private String username;
+    @UsernameNullableConstraint
+    @ApiModelProperty(example = "admin")
+    private String username;
 
-  @Email
-  @ApiModelProperty(example = "admin@admin.com")
-  private String email;
+    @Email
+    @ApiModelProperty(example = "admin@admin.com")
+    private String email;
 
-  @PasswordConstraint
-  @ApiModelProperty(example = "string")
-  private String password;
+    @PasswordConstraint
+    @ApiModelProperty(example = "string")
+    private String password;
 
-  @ApiModelProperty(example = "[ROLE_ADMIN]")
-  private List<String> roles;
+    @ApiModelProperty(example = "[ROLE_ADMIN]")
+    private List<String> roles;
 
-  @ApiModelProperty(example = "[READ,CREATE,UPDATE,DELETE]")
-  private List<String> scopes;
+    @ApiModelProperty(example = "[READ,CREATE,UPDATE,DELETE]")
+    private List<String> scopes;
 }

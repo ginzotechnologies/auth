@@ -21,40 +21,42 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UserController
 @AllArgsConstructor
 @Validated
 public class RemoveRolesFromUserController {
 
-  private RemoveRolesFromUserPort removeRolesFromUserPort;
+    private final RemoveRolesFromUserPort removeRolesFromUserPort;
 
-  /**
-   * Remove roles from the user
-   *
-   * @param userId Id of the user that will lose the roles
-   * @param addRolesToUserInputDto Needed data for the role removal
-   * @return Updates user
-   * @throws DuplicatedKeyException If there was some problem saving the user
-   * @throws NotFoundException If the user was not found by the id
-   */
-  @ApiOperation(value = "Remove roles from the user", notes = "Quita roles a un usuario")
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @DeleteMapping("/{userId}/roles")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','DELETE')")
-  public AddRolesToUserOutputDto findAll(
-      @PathVariable @NotEmpty String userId, // todo: validate userId format
-      @RequestBody @Valid AddRolesToUserInputDto addRolesToUserInputDto)
-      throws DuplicatedKeyException, NotFoundException {
-    List<String> roleIds = addRolesToUserInputDto.getRole_ids();
-    User updatedUser = removeRolesFromUserPort.remove(userId, roleIds);
-    return new AddRolesToUserOutputDto(updatedUser);
-  }
+    /**
+     * Remove roles from the user
+     *
+     * @param userId                 Id of the user that will lose the roles
+     * @param addRolesToUserInputDto Needed data for the role removal
+     * @return Updates user
+     * @throws DuplicatedKeyException If there was some problem saving the user
+     * @throws NotFoundException      If the user was not found by the id
+     */
+    @ApiOperation(value = "Remove roles from the user", notes = "Quita roles a un usuario")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @DeleteMapping("/{userId}/roles")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','DELETE')")
+    public AddRolesToUserOutputDto findAll(
+            @PathVariable @NotEmpty Long userId, // todo: validate userId format
+            @RequestBody @Valid AddRolesToUserInputDto addRolesToUserInputDto)
+            throws DuplicatedKeyException, NotFoundException {
+        List<Long> roleIds = addRolesToUserInputDto.getRoleIds();
+        User updatedUser = removeRolesFromUserPort.remove(userId, roleIds);
+        return new AddRolesToUserOutputDto(updatedUser);
+    }
 }

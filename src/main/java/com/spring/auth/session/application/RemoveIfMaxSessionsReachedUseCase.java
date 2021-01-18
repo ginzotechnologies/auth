@@ -9,23 +9,25 @@ import com.spring.auth.user.domain.User;
 import com.spring.auth.user.infrastructure.repositories.ports.FindUserPort;
 import lombok.AllArgsConstructor;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UseCase
 @AllArgsConstructor
 public class RemoveIfMaxSessionsReachedUseCase implements RemoveIfMaxSessionsReachedPort {
 
-  private FindUserPort findUserPort;
-  private DeleteOlderSessionByUserIdPort deleteOlderSessionByUserIdPort;
-  private CountSessionPort countSessionPort;
+    private final FindUserPort findUserPort;
+    private final DeleteOlderSessionByUserIdPort deleteOlderSessionByUserIdPort;
+    private final CountSessionPort countSessionPort;
 
-  @Override
-  public void remove(String userId) throws NotFoundException {
-    if (!canUserHaveMoreSessions(userId)) deleteOlderSessionByUserIdPort.delete(userId);
-  }
+    @Override
+    public void remove(Long userId) throws NotFoundException {
+        if (!canUserHaveMoreSessions(userId)) deleteOlderSessionByUserIdPort.delete(userId);
+    }
 
-  private boolean canUserHaveMoreSessions(String userId) throws NotFoundException {
-    User user = findUserPort.findById(userId);
-    int sessionCount = countSessionPort.countAllByUserId(userId);
-    return user.canHaveMoreSessions(sessionCount);
-  }
+    private boolean canUserHaveMoreSessions(Long userId) throws NotFoundException {
+        User user = findUserPort.findById(userId);
+        int sessionCount = countSessionPort.countAllByUserId(userId);
+        return user.canHaveMoreSessions(sessionCount);
+    }
 }

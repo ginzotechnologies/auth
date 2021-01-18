@@ -8,11 +8,11 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface FindClientPort {
-  Page<Client> search(String id,String clientId, int page, int size);
+    Page<Client> search(Long id, Long clientId, int page, int size);
 
-  Client findById(String id) throws DuplicatedKeyException, NotFoundException;
+    Client findById(Long id) throws DuplicatedKeyException, NotFoundException;
 
-  Client findByClientId(String clientId) throws NotFoundException;
+    Client findByClientId(Long clientId) throws NotFoundException;
 
-  List<Client> findAll();
+    List<Client> findAll();
 }

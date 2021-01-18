@@ -12,22 +12,26 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
-/** @author diegotobalina created on 19/06/2020 */
+/**
+ * @author diegotobalina created on 19/06/2020
+ */
 @CustomEventListener
 @AllArgsConstructor
 public class RolesUpdatedEventListener {
 
-  private UpdateUsersRolesPort updateUsersRolesPort;
+    private final UpdateUsersRolesPort updateUsersRolesPort;
 
-  /** When a role is updated should be updated in the users */
-  @Async
-  @TransactionalEventListener
-  public void eventListener(RolesUpdatedEvent rolesUpdatedEvent) throws DuplicatedKeyException {
-    List<Role> roles = rolesUpdatedEvent.getSource();
-    updateUsersRoles(roles);
-  }
+    /**
+     * When a role is updated should be updated in the users
+     */
+    @Async
+    @TransactionalEventListener
+    public void eventListener(RolesUpdatedEvent rolesUpdatedEvent) throws DuplicatedKeyException {
+        List<Role> roles = rolesUpdatedEvent.getSource();
+        updateUsersRoles(roles);
+    }
 
-  private List<User> updateUsersRoles(List<Role> roles) throws DuplicatedKeyException {
-    return updateUsersRolesPort.updateUsersRoles(roles);
-  }
+    private List<User> updateUsersRoles(List<Role> roles) throws DuplicatedKeyException {
+        return updateUsersRolesPort.updateUsersRoles(roles);
+    }
 }

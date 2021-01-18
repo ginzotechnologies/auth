@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface UserInfoPort {
-  User userInfo(Principal principal) throws NotFoundException, LockedUserException;
+    User userInfo(Principal principal) throws NotFoundException, LockedUserException;
 
-  User userInfo(String token, String clientId) throws NotFoundException, LockedUserException, InfiniteLoopException, GeneralSecurityException, InvalidTokenException, IOException, UnknownTokenFormatException, EmailDoesNotExistsException, GoogleGetInfoException, DuplicatedKeyException;
+    User userInfo(String token, Long clientId) throws NotFoundException, LockedUserException, InfiniteLoopException, GeneralSecurityException, InvalidTokenException, IOException, UnknownTokenFormatException, EmailDoesNotExistsException, GoogleGetInfoException, DuplicatedKeyException;
 }

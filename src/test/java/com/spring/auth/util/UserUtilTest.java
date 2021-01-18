@@ -27,8 +27,8 @@ class UserUtilTest {
   public void getUserIdFromPrincipal() {
     var user = instancer.user();
     var principal = instancer.principal(user);
-    String userIdFromPrincipal = UserUtil.getUserIdFromPrincipal(principal);
-    assertEquals("id", userIdFromPrincipal);
+    Long userIdFromPrincipal = UserUtil.getUserIdFromPrincipal(principal);
+    assertEquals(Long.valueOf(1), userIdFromPrincipal);
   }
 
   @Test

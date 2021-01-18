@@ -6,9 +6,11 @@ import com.spring.auth.role.domain.Role;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface AddScopesToRolePort {
-  Role add(Role role, List<String> scopeIds) throws DuplicatedKeyException;
+    Role add(Role role, List<Long> scopeIds) throws DuplicatedKeyException;
 
-  Role add(String roleId, List<String> scopeIds) throws NotFoundException, DuplicatedKeyException;
+    Role add(Long roleId, List<Long> scopeIds) throws NotFoundException, DuplicatedKeyException;
 }

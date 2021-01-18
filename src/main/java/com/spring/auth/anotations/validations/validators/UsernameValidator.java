@@ -7,17 +7,19 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public class UsernameValidator implements ConstraintValidator<UsernameConstraint, String> {
 
-  @Override
-  public void initialize(final UsernameConstraint contactNumber) {
-    // empty
-  }
+    @Override
+    public void initialize(final UsernameConstraint contactNumber) {
+        // empty
+    }
 
-  @Override
-  public boolean isValid(final String username, final ConstraintValidatorContext cxt) {
-    if (StringUtils.isBlank(username)) return false;
-    return RegexUtil.isValidUsername(username);
-  }
+    @Override
+    public boolean isValid(final String username, final ConstraintValidatorContext cxt) {
+        if (StringUtils.isBlank(username)) return false;
+        return RegexUtil.isValidUsername(username);
+    }
 }

@@ -7,60 +7,71 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
-@Document(collection = "spring_user")
+@Entity
+@Table(name = "spring_user")
 public class UserJpa extends Auditable {
 
-  @Setter @Id @Indexed private String id;
+    private static final long serialVersionUID = 1L;
 
-  @Setter @Indexed private String username;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    private Long id;
 
-  @Setter @Indexed private String email;
+    private String username;
 
-  private String password;
-  @Setter @Indexed private List<RoleJpa> roles;
-  @Setter @Indexed private List<ScopeJpa> scopes;
-  private int maxSessions = 10;
-  private boolean locked = false;
+    private String email;
 
-  private boolean loggedWithGoogle = false;
-  private boolean emailVerified = false;
+    private String password;
 
-  public UserJpa(
-      Date createdAt,
-      Date lastModified,
-      String createdBy,
-      String lastModifiedBy,
-      String id,
-      String username,
-      String email,
-      String password,
-      List<RoleJpa> roles,
-      List<ScopeJpa> scopes,
-      int maxSessions,
-      boolean locked,
-      boolean loggedWithGoogle,
-      boolean emailVerified) {
-    super(createdAt, lastModified, createdBy, lastModifiedBy);
-    this.id = id;
-    this.username = username;
-    this.email = email;
-    this.password = password;
-    this.roles = roles;
-    this.scopes = scopes;
-    this.maxSessions = maxSessions;
-    this.locked = locked;
-    this.loggedWithGoogle = loggedWithGoogle;
-    this.emailVerified = emailVerified;
-  }
+    @OneToMany(mappedBy = "")
+    private List<RoleJpa> roles;
+
+    @OneToMany(mappedBy = "")
+    private List<ScopeJpa> scopes;
+
+    private int maxSessions = 10;
+    private boolean locked = false;
+    private boolean loggedWithGoogle = false;
+    private boolean emailVerified = false;
+
+    public UserJpa(
+            Date createdAt,
+            Date lastModified,
+            String createdBy,
+            String lastModifiedBy,
+            Long id,
+            String username,
+            String email,
+            String password,
+            List<RoleJpa> roles,
+            List<ScopeJpa> scopes,
+            int maxSessions,
+            boolean locked,
+            boolean loggedWithGoogle,
+            boolean emailVerified) {
+        super(createdAt, lastModified, createdBy, lastModifiedBy);
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.scopes = scopes;
+        this.maxSessions = maxSessions;
+        this.locked = locked;
+        this.loggedWithGoogle = loggedWithGoogle;
+        this.emailVerified = emailVerified;
+    }
 }

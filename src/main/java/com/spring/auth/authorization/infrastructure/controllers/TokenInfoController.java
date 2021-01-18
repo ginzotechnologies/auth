@@ -16,28 +16,30 @@ import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Slf4j
 @Validated
 @AllArgsConstructor
 @AuthorizationController
 public class TokenInfoController {
 
-  private TokenInfoPort tokenInfoPort;
+    private final TokenInfoPort tokenInfoPort;
 
-  @ApiOperation(
-      value = "Token info",
-      notes =
-          "Devuelve la información relacionada con un token, puede ser de sesión, de acceso o de google")
-  @GetMapping("/tokenInfo")
-  public TokenInfoOutputDto tokenInfo(
-      @RequestParam(value = "client_id", required = false) String clientId,
-      @RequestParam @NotEmpty final String token) // todo: validate param
-      throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
-          GeneralSecurityException, IOException, GoogleGetInfoException,
-          EmailDoesNotExistsException, LockedUserException, DuplicatedKeyException,
-          InfiniteLoopException {
-    final TokenInfo tokenInfo = tokenInfoPort.tokenInfo(token, clientId);
-    return new TokenInfoOutputDto(tokenInfo);
-  }
+    @ApiOperation(
+            value = "Token info",
+            notes = "Devuelve la información relacionada con un token, puede ser de sesión, de acceso o de google"
+    )
+    @GetMapping("/tokenInfo")
+    public TokenInfoOutputDto tokenInfo(
+            @RequestParam(value = "client_id", required = false) Long clientId,
+            @RequestParam @NotEmpty final String token) // todo: validate param
+            throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
+            GeneralSecurityException, IOException, GoogleGetInfoException,
+            EmailDoesNotExistsException, LockedUserException, DuplicatedKeyException,
+            InfiniteLoopException {
+        final TokenInfo tokenInfo = tokenInfoPort.tokenInfo(token, clientId);
+        return new TokenInfoOutputDto(tokenInfo);
+    }
 }

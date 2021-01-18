@@ -19,25 +19,27 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.Valid;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Slf4j
 @AllArgsConstructor
 @AuthorizationController
 public class AccessController {
 
-  private AccessPort accessPort;
+    private final AccessPort accessPort;
 
-  @ResponseStatus(HttpStatus.CREATED)
-  @ApiOperation(
-      value = "Access",
-      notes = "Obtiene un token de acceso mediante el token recibido en la llamada login")
-  @PostMapping("/access")
-  public AccessOutputDto access(@RequestBody @Valid AccessInputDto accessInputDto)
-      throws NotFoundException, InvalidTokenException, LockedUserException {
-    String token = TokenUtil.removeBearerPrefix(accessInputDto.getSession_token());
-    List<String> roleValues = accessInputDto.getRoles();
-    List<String> scopeValues = accessInputDto.getScopes();
-    TokenUtil.JwtWrapper access = accessPort.access(token, roleValues, scopeValues);
-    return new AccessOutputDto(access);
-  }
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(
+            value = "Access",
+            notes = "Obtiene un token de acceso mediante el token recibido en la llamada login")
+    @PostMapping("/access")
+    public AccessOutputDto access(@RequestBody @Valid AccessInputDto accessInputDto)
+            throws NotFoundException, InvalidTokenException, LockedUserException {
+        String token = TokenUtil.removeBearerPrefix(accessInputDto.getSession_token());
+        List<String> roleValues = accessInputDto.getRoles();
+        List<String> scopeValues = accessInputDto.getScopes();
+        TokenUtil.JwtWrapper access = accessPort.access(token, roleValues, scopeValues);
+        return new AccessOutputDto(access);
+    }
 }

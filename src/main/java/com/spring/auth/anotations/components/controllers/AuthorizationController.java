@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Api(tags = "Oauth2", description = "Authorization endpoints")
 @RequestMapping("${api.prefix}/oauth2")
 public @interface AuthorizationController {
-  @AliasFor(annotation = Component.class)
-  String value() default "";
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 }
