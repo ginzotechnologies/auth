@@ -9,21 +9,23 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-/** @author diegotobalina created on 19/06/2020 */
+/**
+ * @author diegotobalina created on 19/06/2020
+ */
 @CustomEventListener
 @AllArgsConstructor
 public class SessionCreatedEventListener {
 
-  private RemoveIfMaxSessionsReachedPort removeIfMaxSessionsReachedPort;
+    private final RemoveIfMaxSessionsReachedPort removeIfMaxSessionsReachedPort;
 
-  @Async
-  @TransactionalEventListener
-  public void eventListener(SessionCreatedEvent sessionCreatedEvent) throws NotFoundException {
-    Session createdSession = sessionCreatedEvent.getSource();
-    removeIfMaxSessionsReached(createdSession);
-  }
+    @Async
+    @TransactionalEventListener
+    public void eventListener(SessionCreatedEvent sessionCreatedEvent) throws NotFoundException {
+        Session createdSession = sessionCreatedEvent.getSource();
+        removeIfMaxSessionsReached(createdSession);
+    }
 
-  private void removeIfMaxSessionsReached(Session createdSession) throws NotFoundException {
-    removeIfMaxSessionsReachedPort.remove(createdSession.getUserId());
-  }
+    private void removeIfMaxSessionsReached(Session createdSession) throws NotFoundException {
+        removeIfMaxSessionsReachedPort.remove(createdSession.getUserId());
+    }
 }

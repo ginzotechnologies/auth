@@ -18,50 +18,52 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Slf4j
 @Repository
 public class GoogleGetInfoRepository implements GoogleGetInfoPort {
 
-  @Value("${google.oauth2.client_id}")
-  private String googleClientId;
+    @Value("${google.oauth2.client_id}")
+    private String googleClientId;
 
-  Map<String, NetHttpTransport> transportHashMap = new HashMap<>();
-  Map<String, JacksonFactory> jacksonFactoryMap = new HashMap<>();
+    Map<String, NetHttpTransport> transportHashMap = new HashMap<>();
+    Map<String, JacksonFactory> jacksonFactoryMap = new HashMap<>();
 
-  @Override
-  public Payload get(String jwt)
-      throws GeneralSecurityException, IOException, GoogleGetInfoException {
-    return this.get(jwt, this.googleClientId);
-  }
+    @Override
+    public Payload get(String jwt)
+            throws GeneralSecurityException, IOException, GoogleGetInfoException {
+        return this.get(jwt, this.googleClientId);
+    }
 
-  @Override
-  public Payload get(String jwt, String googleClientId)
-      throws GeneralSecurityException, IOException, GoogleGetInfoException {
-    if (googleClientId == null || googleClientId.isEmpty())
-      googleClientId = this.googleClientId; // if empty google
+    @Override
+    public Payload get(String jwt, String googleClientId)
+            throws GeneralSecurityException, IOException, GoogleGetInfoException {
+        if (googleClientId == null || googleClientId.isEmpty())
+            googleClientId = this.googleClientId; // if empty google
 
-    instanceSingleton(googleClientId);
-    GoogleIdTokenVerifier verifier = getVerifier(googleClientId);
+        instanceSingleton(googleClientId);
+        GoogleIdTokenVerifier verifier = getVerifier(googleClientId);
 
-    GoogleIdToken idToken = verifier.verify(jwt);
-    if (idToken == null) throw new GoogleGetInfoException("google failed login");
+        GoogleIdToken idToken = verifier.verify(jwt);
+        if (idToken == null) throw new GoogleGetInfoException("google failed login");
 
-    return idToken.getPayload();
-  }
+        return idToken.getPayload();
+    }
 
-  private void instanceSingleton(String googleClientId)
-      throws GeneralSecurityException, IOException {
-    if (!transportHashMap.containsKey(googleClientId))
-      transportHashMap.put(googleClientId, GoogleNetHttpTransport.newTrustedTransport());
-    if (!jacksonFactoryMap.containsKey(googleClientId))
-      jacksonFactoryMap.put(googleClientId, JacksonFactory.getDefaultInstance());
-  }
+    private void instanceSingleton(String googleClientId)
+            throws GeneralSecurityException, IOException {
+        if (!transportHashMap.containsKey(googleClientId))
+            transportHashMap.put(googleClientId, GoogleNetHttpTransport.newTrustedTransport());
+        if (!jacksonFactoryMap.containsKey(googleClientId))
+            jacksonFactoryMap.put(googleClientId, JacksonFactory.getDefaultInstance());
+    }
 
-  private GoogleIdTokenVerifier getVerifier(String googleClientId) {
-    return new GoogleIdTokenVerifier.Builder(
-            transportHashMap.get(googleClientId), jacksonFactoryMap.get(googleClientId))
-        .setAudience(Collections.singletonList(googleClientId))
-        .build();
-  }
+    private GoogleIdTokenVerifier getVerifier(String googleClientId) {
+        return new GoogleIdTokenVerifier.Builder(
+                transportHashMap.get(googleClientId), jacksonFactoryMap.get(googleClientId))
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+    }
 }

@@ -1,6 +1,6 @@
 # Authorization server
 
-Authorization server with spring and mongodb
+Authorization server with spring and PostgreSQL
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/xBidi/auth)
 

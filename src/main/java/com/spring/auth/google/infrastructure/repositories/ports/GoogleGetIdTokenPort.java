@@ -5,8 +5,10 @@ import com.spring.auth.exceptions.application.GoogleGetInfoException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface GoogleGetIdTokenPort {
-  String get(String refreshToken, String clientId, String clientSecret)
-      throws GeneralSecurityException, IOException, GoogleGetInfoException;
+    String get(String refreshToken, String clientId, String clientSecret)
+            throws GeneralSecurityException, IOException, GoogleGetInfoException;
 }

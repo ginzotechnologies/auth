@@ -23,32 +23,34 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @RoleController
 @AllArgsConstructor
 @Validated
 public class UpdateScopesFromRoleController {
 
-  private UpdateScopesFromRolePort updateScopesFromRolePort;
+    private final UpdateScopesFromRolePort updateScopesFromRolePort;
 
-  @ApiOperation(value = "Update scopes", notes = "Actualiza las scopes de un role")
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @ResponseStatus(HttpStatus.CREATED)
-  @PutMapping("/{roleId}/scopes")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
-  public UpdateScopesFromRoleOutputDto update(
-          @PathVariable @NotEmpty String roleId, // todo: validate roleId format
-          @RequestBody @Valid UpdateScopesFromRoleInputDto updateScopesFromRoleInputDto)
-      throws NotFoundException, DuplicatedKeyException {
-    List<String> scopes = updateScopesFromRoleInputDto.getScope_ids();
-    Role roleUpdated = updateScopesFromRolePort.update(roleId, scopes);
-    return new UpdateScopesFromRoleOutputDto(roleUpdated);
-  }
+    @ApiOperation(value = "Update scopes", notes = "Actualiza las scopes de un role")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{roleId}/scopes")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
+    public UpdateScopesFromRoleOutputDto update(
+            @PathVariable @NotEmpty Long roleId, // todo: validate roleId format
+            @RequestBody @Valid UpdateScopesFromRoleInputDto updateScopesFromRoleInputDto)
+            throws NotFoundException, DuplicatedKeyException {
+        List<Long> scopes = updateScopesFromRoleInputDto.getScope_ids();
+        Role roleUpdated = updateScopesFromRolePort.update(roleId, scopes);
+        return new UpdateScopesFromRoleOutputDto(roleUpdated);
+    }
 }

@@ -1,7 +1,6 @@
 package com.spring.auth.exceptions.util;
 
 import com.spring.auth.exceptions.domain.ErrorResponse;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;

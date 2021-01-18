@@ -32,10 +32,10 @@ public class AccessUseCase implements AccessPort {
     @Value(("${server.auth.secret-expiration}"))
     private long expiration;
 
-    private FindUserPort findUserPort;
-    private FindSessionPort findSessionPort;
-    private DeleteSessionPort deleteSessionPort;
-    private PublishSessionUsedEventPort publishSessionUsedEventPort;
+    private final FindUserPort findUserPort;
+    private final FindSessionPort findSessionPort;
+    private final DeleteSessionPort deleteSessionPort;
+    private final PublishSessionUsedEventPort publishSessionUsedEventPort;
 
     public AccessUseCase(
             FindUserPort findUserPort,
@@ -68,15 +68,15 @@ public class AccessUseCase implements AccessPort {
     }
 
     @Override
-    public TokenUtil.JwtWrapper access(String userId)
+    public TokenUtil.JwtWrapper access(Long userId)
             throws NotFoundException, InvalidTokenException, LockedUserException {
         User user = findUserPort.findById(userId);
+
         // check if the user is locked
         if (user.isLocked()) throw new LockedUserException("this user is locked");
 
         List<String> roles = user.getRoles().stream().map(Role::getValue).collect(Collectors.toList());
-        List<String> scopes =
-                user.getScopes().stream().map(Scope::getValue).collect(Collectors.toList());
+        List<String> scopes = user.getScopes().stream().map(Scope::getValue).collect(Collectors.toList());
 
         // jwt generation
         return TokenUtil.generateBearerJwt(user, secretKey, expiration, roles, scopes);

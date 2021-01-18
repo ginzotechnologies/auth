@@ -14,19 +14,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Slf4j
 @AllArgsConstructor
 @AuthorizationController
 public class LogoutController {
 
-  private LogoutUserPort logoutUserPort;
+    private final LogoutUserPort logoutUserPort;
 
-  @DeleteMapping("/logout")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void logout(@RequestBody @Valid final LogoutInputDto logoutInputDto)
-      throws NotFoundException {
-    final String token = TokenUtil.removeBearerPrefix(logoutInputDto.getSession_token());
-    logoutUserPort.logout(token);
-  }
+    @DeleteMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@RequestBody @Valid final LogoutInputDto logoutInputDto)
+            throws NotFoundException {
+        final String token = TokenUtil.removeBearerPrefix(logoutInputDto.getSession_token());
+        logoutUserPort.logout(token);
+    }
 }

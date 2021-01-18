@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 @ToString
 public class UpdateRolesFromUserOutputDto {
 
-    private String id; // id of the user
-    private String username; // username of the user
-    private String email; // email of the user
-    private List<String> roles; // role ids of the user
-    private List<String> scopes; // scope ids of the user
+    private final Long id; // id of the user
+    private final String username; // username of the user
+    private final String email; // email of the user
+    private final List<Long> roles; // role ids of the user
+    private final List<Long> scopes; // scope ids of the user
 
     public UpdateRolesFromUserOutputDto(User user) {
         this.id = user.getId();

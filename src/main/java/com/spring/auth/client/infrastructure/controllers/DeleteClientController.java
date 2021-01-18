@@ -1,9 +1,9 @@
 package com.spring.auth.client.infrastructure.controllers;
 
 import com.spring.auth.anotations.components.controllers.ClientController;
-import com.spring.auth.client.infrastructure.repositories.ports.DeleteClientPort;
 import com.spring.auth.client.domain.Client;
 import com.spring.auth.client.infrastructure.dtos.output.ClientOutputDto;
+import com.spring.auth.client.infrastructure.repositories.ports.DeleteClientPort;
 import com.spring.auth.exceptions.application.DuplicatedKeyException;
 import com.spring.auth.exceptions.application.NotFoundException;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,22 +18,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 @AllArgsConstructor
 public class DeleteClientController {
 
-  private DeleteClientPort deleteClientPort;
+    private final DeleteClientPort deleteClientPort;
 
-  @ApiOperation(value = "Delete a client", notes = "Borra un client de la base de datos")
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @DeleteMapping("{clientId}")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','DELETE')")
-  public ClientOutputDto delete(@PathVariable(value = "clientId") String clientId)
-      throws DuplicatedKeyException, NotFoundException {
-    Client deletedClient = deleteClientPort.delete(clientId);
-    return new ClientOutputDto(deletedClient);
-  }
+    @ApiOperation(value = "Delete a client", notes = "Borra un client de la base de datos")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @DeleteMapping("{clientId}")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','DELETE')")
+    public ClientOutputDto delete(@PathVariable(value = "clientId") Long clientId)
+            throws DuplicatedKeyException, NotFoundException {
+        Client deletedClient = deleteClientPort.delete(clientId);
+        return new ClientOutputDto(deletedClient);
+    }
 }

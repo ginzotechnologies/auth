@@ -23,32 +23,32 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateClientController {
 
-  private UpdateClientValues updateClientValues;
+    private final UpdateClientValues updateClientValues;
 
-  @ApiOperation(
-      value = "Update Client values",
-      notes = "Actualiza los valores de un Client")
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @PutMapping("{clientId}")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
-  public ClientOutputDto update(
-      @PathVariable(value = "clientId") String clientId,
-      @RequestBody @Valid UpdateClientInputDto updateClientInputDto)
-      throws DuplicatedKeyException, NotFoundException {
-    List<String> allowedUrls = updateClientInputDto.getAllowedUrls();
-    List<String> allowedCallbackUrls = updateClientInputDto.getAllowedCallbackUrls();
-    long expirationTokenTime = updateClientInputDto.getExpirationTokenTime();
-    String googleClientId = updateClientInputDto.getGoogleClientId();
-    Client client =
-        updateClientValues.update(
-            clientId, allowedUrls, allowedCallbackUrls, expirationTokenTime, googleClientId);
-    return new ClientOutputDto(client);
-  }
+    @ApiOperation(
+            value = "Update Client values",
+            notes = "Actualiza los valores de un Client")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @PutMapping("{clientId}")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
+    public ClientOutputDto update(
+            @PathVariable(value = "clientId") Long clientId,
+            @RequestBody @Valid UpdateClientInputDto updateClientInputDto)
+            throws DuplicatedKeyException, NotFoundException {
+        List<String> allowedUrls = updateClientInputDto.getAllowedUrls();
+        List<String> allowedCallbackUrls = updateClientInputDto.getAllowedCallbackUrls();
+        long expirationTokenTime = updateClientInputDto.getExpirationTokenTime();
+        String googleClientId = updateClientInputDto.getGoogleClientId();
+        Client client =
+                updateClientValues.update(
+                        clientId, allowedUrls, allowedCallbackUrls, expirationTokenTime, googleClientId);
+        return new ClientOutputDto(client);
+    }
 }

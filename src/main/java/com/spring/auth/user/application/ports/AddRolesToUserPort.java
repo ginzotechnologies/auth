@@ -7,10 +7,15 @@ import com.spring.auth.user.domain.User;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
-/** Add roles to a specific user */
-public interface AddRolesToUserPort {
-  User add(User user, List<Role> roles) throws DuplicatedKeyException;
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 
-  User add(String userId, List<String> roleIds) throws NotFoundException, DuplicatedKeyException;
+/**
+ * Add roles to a specific user
+ */
+public interface AddRolesToUserPort {
+    User add(User user, List<Role> roles) throws DuplicatedKeyException;
+
+    User add(Long userId, List<Long> roleIds) throws NotFoundException, DuplicatedKeyException;
 }

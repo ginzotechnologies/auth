@@ -14,27 +14,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UserController
 @AllArgsConstructor
 public class UnlockUserController {
 
-  private UnlockUserPort unlockUserPort;
+    private final UnlockUserPort unlockUserPort;
 
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ApiOperation(value = "Unlock user", notes = "Desbloquea un usuario")
-  @PutMapping("/{userId}/unlock")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
-  public void lockUser(@PathVariable("userId") String userId)
-      throws DuplicatedKeyException, NotFoundException {
-    unlockUserPort.unlock(userId);
-  }
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "Unlock user", notes = "Desbloquea un usuario")
+    @PutMapping("/{userId}/unlock")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
+    public void lockUser(@PathVariable("userId") Long userId)
+            throws DuplicatedKeyException, NotFoundException {
+        unlockUserPort.unlock(userId);
+    }
 }

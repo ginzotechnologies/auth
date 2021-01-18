@@ -10,23 +10,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-/** @author diegotobalina created on 19/06/2020 */
+/**
+ * @author diegotobalina created on 19/06/2020
+ */
 @CustomEventListener
 @AllArgsConstructor
 public class RoleDeletedEventListener {
 
-  private RemoveRolesFromUserPort removeRolesFromUserPort;
-  private FindUserPort findUserPort;
+    private final RemoveRolesFromUserPort removeRolesFromUserPort;
+    private final FindUserPort findUserPort;
 
-  /** When a role is deleted should be removed from the users */
-  @Async
-  @TransactionalEventListener
-  public void eventListener(RoleDeletedEvent roleDeletedEvent) throws DuplicatedKeyException {
-    Role deletedRole = roleDeletedEvent.getSource();
-    removeRolesFromUser(deletedRole);
-  }
+    /**
+     * When a role is deleted should be removed from the users
+     */
+    @Async
+    @TransactionalEventListener
+    public void eventListener(RoleDeletedEvent roleDeletedEvent) throws DuplicatedKeyException {
+        Role deletedRole = roleDeletedEvent.getSource();
+        removeRolesFromUser(deletedRole);
+    }
 
-  private void removeRolesFromUser(Role deletedRole) throws DuplicatedKeyException {
-    removeRolesFromUserPort.remove(deletedRole.getId());
-  }
+    private void removeRolesFromUser(Role deletedRole) throws DuplicatedKeyException {
+        removeRolesFromUserPort.remove(deletedRole.getId());
+    }
 }

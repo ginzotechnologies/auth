@@ -11,62 +11,64 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UseCase
 @AllArgsConstructor
 public class RemoveRolesFromUserUseCase implements RemoveRolesFromUserPort {
 
-  private FindUserPort findUserPort;
-  private UpdateUserPort updateUserPort;
+    private final FindUserPort findUserPort;
+    private final UpdateUserPort updateUserPort;
 
-  /**
-   * Remove the roles from the user and save it in the database
-   *
-   * @param user User that need the role removals
-   * @param roleIds RoleId of the roles that will be removed
-   * @return Updates user
-   * @throws DuplicatedKeyException If there is a problem saving the user for things like duplicated
-   *     username
-   */
-  @Override
-  public User remove(User user, List<String> roleIds) throws DuplicatedKeyException {
-    user.removeRoles(roleIds);
-    return updateUserPort.update(user);
-  }
+    /**
+     * Remove the roles from the user and save it in the database
+     *
+     * @param user    User that need the role removals
+     * @param roleIds RoleId of the roles that will be removed
+     * @return Updates user
+     * @throws DuplicatedKeyException If there is a problem saving the user for things like duplicated
+     *                                username
+     */
+    @Override
+    public User remove(User user, List<Long> roleIds) throws DuplicatedKeyException {
+        user.removeRoles(roleIds);
+        return updateUserPort.update(user);
+    }
 
-  /**
-   * Remove the roles from the user and save it in the database
-   *
-   * @param userId Used to find the user in the database
-   * @param roleIds RoleId of the roles that will be removed
-   * @return Updates user
-   * @throws NotFoundException If the user was not found with the id
-   * @throws DuplicatedKeyException If there is a problem saving the user for things like duplicated
-   *     username
-   */
-  @Override
-  public User remove(String userId, List<String> roleIds)
-      throws NotFoundException, DuplicatedKeyException {
-    User user = findUserPort.findById(userId);
-    return remove(user, roleIds);
-  }
+    /**
+     * Remove the roles from the user and save it in the database
+     *
+     * @param userId  Used to find the user in the database
+     * @param roleIds RoleId of the roles that will be removed
+     * @return Updates user
+     * @throws NotFoundException      If the user was not found with the id
+     * @throws DuplicatedKeyException If there is a problem saving the user for things like duplicated
+     *                                username
+     */
+    @Override
+    public User remove(Long userId, List<Long> roleIds)
+            throws NotFoundException, DuplicatedKeyException {
+        User user = findUserPort.findById(userId);
+        return remove(user, roleIds);
+    }
 
-  @Override
-  public List<User> remove(List<String> roleIds) throws DuplicatedKeyException {
-    List<User> users = findUserPort.findAllByRoleIds(roleIds);
-    this.remove(users, roleIds);
-    return users;
-  }
+    @Override
+    public List<User> remove(List<Long> roleIds) throws DuplicatedKeyException {
+        List<User> users = findUserPort.findAllByRoleIds(roleIds);
+        this.remove(users, roleIds);
+        return users;
+    }
 
-  @Override
-  public List<User> remove(String roleId) throws DuplicatedKeyException {
-    return remove(List.of(roleId));
-  }
+    @Override
+    public List<User> remove(Long roleId) throws DuplicatedKeyException {
+        return remove(List.of(roleId));
+    }
 
-  @Override
-  public List<User> remove(List<User> User, List<String> roleIds) throws DuplicatedKeyException {
-    List<User> users = findUserPort.findAllByRoleIds(roleIds);
-    for (User user : users) user.removeRoles(roleIds);
-    return updateUserPort.updateAll(users);
-  }
+    @Override
+    public List<User> remove(List<User> User, List<Long> roleIds) throws DuplicatedKeyException {
+        List<User> users = findUserPort.findAllByRoleIds(roleIds);
+        for (User user : users) user.removeRoles(roleIds);
+        return updateUserPort.updateAll(users);
+    }
 }

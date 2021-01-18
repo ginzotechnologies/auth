@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UpdateUsersRolesUseCase implements UpdateUsersRolesPort {
 
-    private FindUserPort findUserPort;
-    private UpdateUserPort updateUserPort;
-    private FindRolePort findRolePort;
+    private final FindUserPort findUserPort;
+    private final UpdateUserPort updateUserPort;
+    private final FindRolePort findRolePort;
 
     @Override
     public List<User> updateUsersRoles(List<Role> roles) throws DuplicatedKeyException {
-        List<String> roleIds = getRoleIds(roles);
+        List<Long> roleIds = getRoleIds(roles);
         List<User> users = findUserPort.findAllByRoleIds(roleIds);
         for (User user : users) {
             for (Role role : roles) {
@@ -44,14 +44,14 @@ public class UpdateUsersRolesUseCase implements UpdateUsersRolesPort {
     }
 
     @Override
-    public User update(String userId, List<String> roleIds)
+    public User update(Long userId, List<Long> roleIds)
             throws DuplicatedKeyException, NotFoundException {
         User user = findUserPort.findById(userId);
         List<Role> roles = findRolePort.findAllByIds(roleIds);
         return update(user, roles);
     }
 
-    private List<String> getRoleIds(List<Role> updatedRoles) {
+    private List<Long> getRoleIds(List<Role> updatedRoles) {
         return updatedRoles.stream().map(Role::getId).collect(Collectors.toList());
     }
 }

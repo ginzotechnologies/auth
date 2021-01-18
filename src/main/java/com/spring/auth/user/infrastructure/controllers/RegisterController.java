@@ -17,22 +17,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UserController
 @AllArgsConstructor
 public class RegisterController {
 
-  private RegisterUserPort registerUserPort;
+    private final RegisterUserPort registerUserPort;
 
-  @ApiOperation(value = "Register", notes = "Registra un nuevo usuario en la base de datos")
-  @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping
-  public RegisterOutputDto register(@RequestBody @Valid RegisterInputDto registerInputDto)
-      throws DuplicatedKeyException, NotFoundException, EmailDoesNotExistsException {
-    final String username = registerInputDto.getUsername();
-    final String email = registerInputDto.getEmail();
-    final String password = registerInputDto.getPassword();
-    final User registeredUser = registerUserPort.register(username, email, password);
-    return new RegisterOutputDto(registeredUser);
-  }
+    @ApiOperation(value = "Register", notes = "Registra un nuevo usuario en la base de datos")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public RegisterOutputDto register(@RequestBody @Valid RegisterInputDto registerInputDto)
+            throws DuplicatedKeyException, NotFoundException, EmailDoesNotExistsException {
+        final String username = registerInputDto.getUsername();
+        final String email = registerInputDto.getEmail();
+        final String password = registerInputDto.getPassword();
+        final User registeredUser = registerUserPort.register(username, email, password);
+        return new RegisterOutputDto(registeredUser);
+    }
 }

@@ -7,26 +7,28 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface FindUserPort {
 
-  Page<User> search(String id,String username, String email, int page, int size);
+    Page<User> search(Long id, String username, String email, int page, int size);
 
-  List<User> findAll();
+    List<User> findAll();
 
-  List<User> findAllByRoleId(String roleId);
+    List<User> findAllByRoleId(Long roleId);
 
-  List<User> findAllByRoleIds(List<String> roleIds);
+    List<User> findAllByRoleIds(List<Long> roleIds);
 
-  List<User> findAllByScopeId(String scopeId);
+    List<User> findAllByScopeId(Long scopeId);
 
-  User findByEmail(String email) throws NotFoundException;
+    User findByEmail(String email) throws NotFoundException;
 
-  User findByUsername(String username) throws NotFoundException;
+    User findByUsername(String username) throws NotFoundException;
 
-  User findById(String id) throws NotFoundException;
+    User findById(Long id) throws NotFoundException;
 
-  User findByUsernameOrEmail(String username, String email) throws NotFoundException;
+    User findByUsernameOrEmail(String username, String email) throws NotFoundException;
 
-  String findAvailableUsername(String email) throws InfiniteLoopException;
+    String findAvailableUsername(String email) throws InfiniteLoopException;
 }

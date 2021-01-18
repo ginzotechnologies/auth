@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Api(tags = "Clients", description = "Clients endpoints")
 @RequestMapping("${api.prefix}/clients")
 public @interface ClientController {
-  @AliasFor(annotation = Component.class)
-  String value() default "";
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 }

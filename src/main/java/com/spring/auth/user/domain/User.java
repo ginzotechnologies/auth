@@ -23,23 +23,22 @@ import java.util.regex.Pattern;
  * @author diegotobalina created on 24/06/2020
  */
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 public class User extends Auditable implements Serializable {
 
-    private String id;
+    private Long id;
     private String username = "";
     private String email = "";
     private String password = "";
-    @Setter
+
     private List<Role> roles = new ArrayList<>();
-    @Setter
     private List<Scope> scopes = new ArrayList<>();
     private int maxSessions = 10;
     private boolean locked = false;
 
     // not loaded by default, call LoadUserSessionsPort
-    @Setter
     private List<Session> sessions;
 
     private boolean loggedWithGoogle = false;
@@ -58,7 +57,7 @@ public class User extends Auditable implements Serializable {
         this.scopes = scopes;
     }
 
-    public User(final String id, final List<Role> roles, final List<Scope> scopes) {
+    public User(final Long id, final List<Role> roles, final List<Scope> scopes) {
         this.id = id;
         this.roles = roles;
         this.scopes = scopes;
@@ -75,7 +74,7 @@ public class User extends Auditable implements Serializable {
             Date lastModified,
             String createdBy,
             String lastModifiedBy,
-            String id,
+            Long id,
             String username,
             String email,
             String password,
@@ -158,8 +157,8 @@ public class User extends Auditable implements Serializable {
         fixScopes();
     }
 
-    public void removeRoles(List<String> roles) {
-        for (String s : roles) {
+    public void removeRoles(List<Long> roleIds) {
+        for (Long s : roleIds) {
             for (Role role : this.roles) {
                 if (role.getId().equals(s)) {
                     this.roles.remove(role);
@@ -194,7 +193,7 @@ public class User extends Auditable implements Serializable {
         return optional.isPresent();
     }
 
-    public Role getRoleById(String id) {
+    public Role getRoleById(Long id) {
         for (Role role : roles) if (role.getId().equals(id)) return role;
         return null;
     }

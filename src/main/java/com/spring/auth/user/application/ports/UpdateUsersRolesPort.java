@@ -16,5 +16,5 @@ public interface UpdateUsersRolesPort {
 
     User update(User user, List<Role> roles) throws DuplicatedKeyException;
 
-    User update(String userId, List<String> roleIds) throws DuplicatedKeyException, NotFoundException;
+    User update(Long userId, List<Long> roleIds) throws DuplicatedKeyException, NotFoundException;
 }

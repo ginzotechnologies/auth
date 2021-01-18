@@ -19,11 +19,11 @@ import java.util.List;
 @NoArgsConstructor
 public class UpdateScopesFromRoleOutputDto {
 
-    private String id;
+    private Long id;
     private String name;
     private String description;
     private String value;
-    private List<String> scopes = new ArrayList<>();
+    private List<Long> scopes = new ArrayList<>();
 
     public UpdateScopesFromRoleOutputDto(Role role) {
         this.id = role.getId();

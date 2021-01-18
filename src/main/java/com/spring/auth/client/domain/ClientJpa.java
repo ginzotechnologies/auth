@@ -2,51 +2,54 @@ package com.spring.auth.client.domain;
 
 import com.spring.auth.shared.domain.Auditable;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "spring_client")
+@Entity
+@Table(name = "spring_client")
 public class ClientJpa extends Auditable {
 
-  @Setter @Id @Indexed private String id;
-  @Setter @Indexed private String clientId = "";
-  @Setter private String clientSecret = "";
-  private Date creationDate = new Date();
-  private List<String> allowedUrls = new ArrayList<>();
-  private List<String> allowedCallbackUrls = new ArrayList<>();
-  @Setter private long expirationTimeToken = (long) (1000 * 60 * 20); // 1s > 1m > 20m
-  @Setter private String googleClientId = "";
+    private static final long serialVersionUID = 1L;
 
-  public ClientJpa(
-      Date createdAt,
-      Date lastModified,
-      String createdBy,
-      String lastModifiedBy,
-      String id,
-      String clientId,
-      String clientSecret,
-      Date creationDate,
-      List<String> allowedUrls,
-      List<String> allowedCallbackUrls,
-      long expirationTimeToken,
-      String googleClientId) {
-    super(createdAt, lastModified, createdBy, lastModifiedBy);
-    this.id = id;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.creationDate = creationDate;
-    this.allowedUrls = allowedUrls;
-    this.allowedCallbackUrls = allowedCallbackUrls;
-    this.expirationTimeToken = expirationTimeToken;
-    this.googleClientId = googleClientId;
-  }
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    private Long id;
+    private Long clientId;
+    private String clientSecret = "";
+    private Date creationDate = new Date();
+    private String allowedUrls = "";
+    private String allowedCallbackUrls = "";
+    private long expirationTimeToken = 1000 * 60 * 20; // 1s > 1m > 20m
+    private String googleClientId = "";
+
+    public ClientJpa(
+            Date createdAt,
+            Date lastModified,
+            String createdBy,
+            String lastModifiedBy,
+            Long id,
+            Long clientId,
+            String clientSecret,
+            Date creationDate,
+            String allowedUrls,
+            String allowedCallbackUrls,
+            long expirationTimeToken,
+            String googleClientId) {
+        super(createdAt, lastModified, createdBy, lastModifiedBy);
+        this.id = id;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.creationDate = creationDate;
+        this.allowedUrls = allowedUrls;
+        this.allowedCallbackUrls = allowedCallbackUrls;
+        this.expirationTimeToken = expirationTimeToken;
+        this.googleClientId = googleClientId;
+    }
 }

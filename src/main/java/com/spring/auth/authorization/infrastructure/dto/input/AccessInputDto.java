@@ -9,17 +9,20 @@ import lombok.ToString;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class AccessInputDto {
-  @SessionTokenConstraint private String session_token;
+    @SessionTokenConstraint
+    private String session_token;
 
-  @ApiModelProperty(example = "[ROLE_ADMIN]")
-  private List<String> roles;
+    @ApiModelProperty(example = "[ROLE_ADMIN]")
+    private List<String> roles;
 
-  @ApiModelProperty(example = "[READ,CREATE,UPDATE,DELETE]")
-  private List<String> scopes;
+    @ApiModelProperty(example = "[READ,CREATE,UPDATE,DELETE]")
+    private List<String> scopes;
 }

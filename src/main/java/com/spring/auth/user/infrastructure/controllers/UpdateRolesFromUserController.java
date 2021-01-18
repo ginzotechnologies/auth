@@ -32,7 +32,7 @@ import java.util.List;
 @Validated
 public class UpdateRolesFromUserController {
 
-    private UpdateUsersRolesPort updateUsersRolesPort;
+    private final UpdateUsersRolesPort updateUsersRolesPort;
 
     @ApiOperation(value = "Update user roles", notes = "Actualiza los roles de un usuario")
     @ApiImplicitParams({
@@ -47,10 +47,10 @@ public class UpdateRolesFromUserController {
     @PutMapping("/{userId}/roles")
     @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
     public UpdateRolesFromUserOutputDto update(
-            @PathVariable @NotEmpty String userId, // todo: validate userId format
+            @PathVariable @NotEmpty Long userId, // todo: validate userId format
             @RequestBody @Valid UpdateRolesFromUserInputDto updateRolesFromUserInputDto)
             throws DuplicatedKeyException, NotFoundException {
-        List<String> roleIds = updateRolesFromUserInputDto.getRole_ids();
+        List<Long> roleIds = updateRolesFromUserInputDto.getRole_ids();
         User updatedUser = updateUsersRolesPort.update(userId, roleIds);
         return new UpdateRolesFromUserOutputDto(updatedUser);
     }

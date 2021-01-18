@@ -10,26 +10,28 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public class AuthenticationUtil {
-  public static boolean isAuthenticated() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return authentication != null
-        && authentication.isAuthenticated()
-        && !authentication.getPrincipal().equals("anonymousUser");
-  }
+    public static boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null
+                && authentication.isAuthenticated()
+                && !authentication.getPrincipal().equals("anonymousUser");
+    }
 
-  public static void authenticate(User user) {
-    List<SimpleGrantedAuthority> simpleGrantedAuthorities =
-        getSimpleGrantedAuthorities(user.getRoles());
-    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-        new UsernamePasswordAuthenticationToken(user, user.getScopes(), simpleGrantedAuthorities);
-    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-  }
+    public static void authenticate(User user) {
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities =
+                getSimpleGrantedAuthorities(user.getRoles());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(user, user.getScopes(), simpleGrantedAuthorities);
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+    }
 
-  private static List<SimpleGrantedAuthority> getSimpleGrantedAuthorities(List<Role> roles) {
-    return roles.stream()
-        .map(role -> new SimpleGrantedAuthority(role.getValue()))
-        .collect(Collectors.toList());
-  }
+    private static List<SimpleGrantedAuthority> getSimpleGrantedAuthorities(List<Role> roles) {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getValue()))
+                .collect(Collectors.toList());
+    }
 }

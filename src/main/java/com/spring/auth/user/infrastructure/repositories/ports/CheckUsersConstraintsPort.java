@@ -5,9 +5,11 @@ import com.spring.auth.user.domain.User;
 
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 public interface CheckUsersConstraintsPort {
-  void check(User user) throws DuplicatedKeyException;
+    void check(User user) throws DuplicatedKeyException;
 
-  void check(List<User> users) throws DuplicatedKeyException;
+    void check(List<User> users) throws DuplicatedKeyException;
 }

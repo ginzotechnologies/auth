@@ -6,15 +6,17 @@ import com.spring.auth.exceptions.application.NotFoundException;
 import com.spring.auth.session.infrastructure.repositories.ports.DeleteSessionPort;
 import lombok.AllArgsConstructor;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UseCase
 @AllArgsConstructor
 public class LogoutUseCase implements LogoutUserPort {
 
-  private DeleteSessionPort deleteSessionPort;
+    private final DeleteSessionPort deleteSessionPort;
 
-  @Override
-  public void logout(final String token) throws NotFoundException {
-    deleteSessionPort.delete(token);
-  }
+    @Override
+    public void logout(final String token) throws NotFoundException {
+        deleteSessionPort.delete(token);
+    }
 }

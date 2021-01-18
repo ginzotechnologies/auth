@@ -16,27 +16,29 @@ import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Slf4j
 @Validated
 @AllArgsConstructor
 @AuthorizationController
 public class ExchangeController {
 
-  private ExchangePort exchangePort;
+    private final ExchangePort exchangePort;
 
-  @ApiOperation(
-      value = "Exchange token",
-      notes = "Cambia un token de google por un token propio del server")
-  @GetMapping("/exchange")
-  public AccessOutputDto tokenInfo(
-      @RequestParam(value = "client_id", required = false) String clientId,
-      @RequestParam @NotEmpty final String token) // todo: validate param
-      throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
-          GeneralSecurityException, IOException, GoogleGetInfoException,
-          EmailDoesNotExistsException, LockedUserException, DuplicatedKeyException,
-          InfiniteLoopException {
-    final TokenUtil.JwtWrapper access = exchangePort.exchange(token, clientId);
-    return new AccessOutputDto(access);
-  }
+    @ApiOperation(
+            value = "Exchange token",
+            notes = "Cambia un token de google por un token propio del server")
+    @GetMapping("/exchange")
+    public AccessOutputDto tokenInfo(
+            @RequestParam(value = "client_id", required = false) Long clientId,
+            @RequestParam @NotEmpty final String token) // todo: validate param
+            throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
+            GeneralSecurityException, IOException, GoogleGetInfoException,
+            EmailDoesNotExistsException, LockedUserException, DuplicatedKeyException,
+            InfiniteLoopException {
+        final TokenUtil.JwtWrapper access = exchangePort.exchange(token, clientId);
+        return new AccessOutputDto(access);
+    }
 }

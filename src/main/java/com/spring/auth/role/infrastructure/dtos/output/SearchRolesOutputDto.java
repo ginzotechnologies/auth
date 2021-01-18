@@ -10,26 +10,28 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
-/** @author diegotobalina created on 24/06/2020 */
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class SearchRolesOutputDto {
 
-  private String id;
-  private String name;
-  private String description;
-  private String value;
-  private List<String> scopes = new ArrayList<>();
+    private Long id;
+    private String name;
+    private String description;
+    private String value;
+    private List<Long> scopes = new ArrayList<>();
 
-  public SearchRolesOutputDto(Role role) {
-    this.id = role.getId();
-    this.name = role.getName();
-    this.description = role.getDescription();
-    this.value = role.getValue();
-    for (Scope scope : role.getScopes()) {
-      this.scopes.add(scope.getId());
+    public SearchRolesOutputDto(Role role) {
+        this.id = role.getId();
+        this.name = role.getName();
+        this.description = role.getDescription();
+        this.value = role.getValue();
+        for (Scope scope : role.getScopes()) {
+            this.scopes.add(scope.getId());
+        }
     }
-  }
 }

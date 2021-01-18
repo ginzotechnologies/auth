@@ -35,8 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${api.prefix}")
     private String apiPrefix;
 
-    private GoogleGetInfoPort googleGetInfoPort;
-    private GoogleLoginPort googleLoginPort;
+    private final GoogleGetInfoPort googleGetInfoPort;
+    private final GoogleLoginPort googleLoginPort;
 
     public WebSecurityConfig(GoogleGetInfoPort googleGetInfoPort, GoogleLoginPort googleLoginPort) {
         this.googleGetInfoPort = googleGetInfoPort;

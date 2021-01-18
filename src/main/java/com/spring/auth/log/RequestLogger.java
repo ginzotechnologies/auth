@@ -24,7 +24,7 @@ import java.util.*;
 @AllArgsConstructor
 public class RequestLogger {
 
-    private AsyncLogger asyncLogger;
+    private final AsyncLogger asyncLogger;
 
     public void log(ServletRequest request, ServletResponse response, FilterChain chain) {
         try {

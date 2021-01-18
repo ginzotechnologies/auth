@@ -19,8 +19,8 @@ import java.security.GeneralSecurityException;
 @UseCase
 public class ExchangeUseCase implements ExchangePort {
 
-    private TokenInfoPort tokenInfoPort;
-    private AccessPort accessPort;
+    private final TokenInfoPort tokenInfoPort;
+    private final AccessPort accessPort;
 
     public ExchangeUseCase(TokenInfoPort tokenInfoPort, AccessPort accessPort) {
         this.tokenInfoPort = tokenInfoPort;
@@ -28,7 +28,7 @@ public class ExchangeUseCase implements ExchangePort {
     }
 
     @Override
-    public TokenUtil.JwtWrapper exchange(String token, String clientId)
+    public TokenUtil.JwtWrapper exchange(String token, Long clientId)
             throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
             GeneralSecurityException, IOException, GoogleGetInfoException,
             EmailDoesNotExistsException, LockedUserException, DuplicatedKeyException,
@@ -37,7 +37,7 @@ public class ExchangeUseCase implements ExchangePort {
             throw new InvalidTokenException("this token must ve a Google token");
         }
         TokenInfo tokenInfo = tokenInfoPort.tokenInfo(token, clientId);
-        String userId = tokenInfo.getUser_id();
+        Long userId = tokenInfo.getUserId();
         return accessPort.access(userId);
     }
 }

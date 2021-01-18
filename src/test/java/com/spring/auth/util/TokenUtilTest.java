@@ -87,7 +87,7 @@ class TokenUtilTest {
     TokenUtil.JwtWrapper jwtWrapper = jwtWrapper(secretKey);
 
     Assert.assertNotNull(jwtWrapper);
-    Assert.assertEquals("id", jwtWrapper.getUserId());
+    Assert.assertEquals(Long.valueOf(1), jwtWrapper.getUserId());
 
     long issuedAtTime = jwtWrapper.getIssuedAt().getTime();
     long expectedExpirationTime = issuedAtTime + (1000 * 5);
@@ -103,7 +103,7 @@ class TokenUtilTest {
     TokenUtil.JwtWrapper jwtWrapper = jwtWrapper(secretKey);
     TokenUtil.JwtWrapper values = TokenUtil.getValues(jwtWrapper.getToken(), secretKey);
 
-    assertEquals("id", values.getUserId());
+    assertEquals(Long.valueOf(1), values.getUserId());
     assertEquals(jwtWrapper.getToken(), values.getToken());
     assertEquals(jwtWrapper.getIssuedAt().toString(), values.getIssuedAt().toString());
     assertEquals(jwtWrapper.getExpiration().toString(), values.getExpiration().toString());

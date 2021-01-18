@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Api(tags = "Scopes", description = "Scopes endpoints")
 @RequestMapping("${api.prefix}/scopes")
 public @interface ScopeController {
-  @AliasFor(annotation = Component.class)
-  String value() default "";
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 }

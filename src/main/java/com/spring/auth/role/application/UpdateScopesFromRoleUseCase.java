@@ -20,19 +20,19 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateScopesFromRoleUseCase implements UpdateScopesFromRolePort {
 
-    private FindScopePort findScopePort;
-    private FindRolePort findRolePort;
-    private UpdateRolePort updateRolePort;
+    private final FindScopePort findScopePort;
+    private final FindRolePort findRolePort;
+    private final UpdateRolePort updateRolePort;
 
     @Override
-    public Role update(Role role, List<String> scopeIds) throws DuplicatedKeyException {
+    public Role update(Role role, List<Long> scopeIds) throws DuplicatedKeyException {
         List<Scope> scopes = findScopePort.findAllByIds(scopeIds);
         role.updateScopes(scopes);
         return updateRolePort.update(role);
     }
 
     @Override
-    public Role update(String roleId, List<String> scopeIds) throws NotFoundException, DuplicatedKeyException, NotFoundException {
+    public Role update(Long roleId, List<Long> scopeIds) throws DuplicatedKeyException, NotFoundException {
         Role role = findRolePort.findById(roleId);
         return update(role, scopeIds);
     }
