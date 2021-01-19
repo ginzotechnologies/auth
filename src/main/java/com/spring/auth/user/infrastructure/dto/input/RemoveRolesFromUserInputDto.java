@@ -9,11 +9,15 @@ import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class RemoveRolesFromUserInputDto {
-  // if of the roles
-  @NotEmpty private List<String> roleIds = new ArrayList<>(); // todo: validate roleIds format
+    // if of the roles
+    @NotEmpty
+    private List<String> role_ids = new ArrayList<>(); // todo: validate roleIds format
 }

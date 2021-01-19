@@ -9,11 +9,15 @@ import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class AddRolesToUserInputDto {
-  // id of the roles
-  @NotEmpty private List<String> roleIds = new ArrayList<>(); // todo: validate roleIds format
+    // id of the roles
+    @NotEmpty
+    private List<Long> roleIds = new ArrayList<>(); // todo: validate roleIds format
 }

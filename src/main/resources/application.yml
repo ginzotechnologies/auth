@@ -1,0 +1,76 @@
+server:
+  port: ${PORT:8080}
+  encryption:
+    aad: ${ENCRYPTION_AAD:Ko5EMFDb0fTc9QTbXNiKiKfqicrV88MN}
+    key: ${ENCRYPTION_KEY:X6yYpF8wyyM6G5EOPtv8o3up73IDeOti}
+  auth:
+    secret-key: ${SECRET_KEY:jwt_secret_key_placeholder}
+    secret-expiration: ${JWT_EXPIRATION:1200000}
+
+# SPRING
+spring:
+  application:
+    name: ${APPLICATION_NAME:auth}
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: imanol # ${PROFILE:dev}  # supported profiles: test, dev, pre, pro
+
+  # JACKSON
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+# LOGS
+logging:
+  level:
+    com.ecovinal.industria: debug
+    org:
+      springframework: info
+      hibernate:
+        SQL: off
+  file:
+    name: ecovinal.log
+    max-size: 5MB
+
+# VARIABLES
+admin:
+  username: ${ADMIN_USERNAME:admin}
+  email: ${ADMIN_EMAIL:admin@admin.com}
+  password: ${ADMIN_PASSWORD:string}
+
+api:
+  prefix: ${API_PREFIX:/api/v0}
+  version: ${API_VERSION:0.2.0.0}
+
+# GOOGlE
+google:
+  oauth2:
+    client_id: ${GOOGLE_CLIENT_ID:google_client_id}
+
+# SWAGGER
+swagger:
+  enabled: ${SWAGGER_ENABLED:true}
+  title: Auth server API
+  description: Auth server swagger documentation
+  useDefaultResponseMessages: false
+  enableUrlTemplating: false
+  deepLinking: true
+  defaultModelsExpandDepth: 1
+  defaultModelExpandDepth: 1
+  displayOperationId: false
+  displayRequestDuration: true
+  filter: false
+  maxDisplayedTags: 0
+  showExtensions: false
+
+# MANAGEMENT
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_ENDPOINTS:*}
+  endpoint:
+    env:
+      post:
+        enabled: ${MANAGEMENT_ENV_POST_ENABLED:true}

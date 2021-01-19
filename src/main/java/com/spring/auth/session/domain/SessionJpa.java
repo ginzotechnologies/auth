@@ -1,30 +1,56 @@
 package com.spring.auth.session.domain;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.spring.auth.shared.domain.Auditable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Token entity
- *
- * @author diegotobalina
+ * @author diegotobalina created on 24/06/2020
  */
-@NoArgsConstructor
+
 @Getter
 @Setter
 @ToString
+@Entity
 @AllArgsConstructor
-@Document(collection = "spring_session")
-public class SessionJpa {
+@Table(name = "spring_session")
+public class SessionJpa extends Auditable {
 
-  @Id private String id;
+    private static final long serialVersionUID = 1L;
 
-  @Indexed private String token;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    private Long id;
 
-  private Date issuedAt;
-  @Indexed private Date expiration;
-  @Indexed private String userId;
+    private String token;
+
+    private Date issuedAt;
+
+    private Date expiration;
+
+    private Long userId;
+
+    public SessionJpa(
+            Date createdAt,
+            Date lastModified,
+            String createdBy,
+            String lastModifiedBy,
+            Long id,
+            String token,
+            Date issuedAt,
+            Date expiration,
+            Long userId) {
+        super(createdAt, lastModified, createdBy, lastModifiedBy);
+        this.id = id;
+        this.token = token;
+        this.issuedAt = issuedAt;
+        this.expiration = expiration;
+        this.userId = userId;
+    }
 }

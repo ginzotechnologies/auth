@@ -1,23 +1,49 @@
 package com.spring.auth.scope.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.spring.auth.shared.domain.Auditable;
+import lombok.*;
 
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Getter
+@Setter
 @ToString
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "spring_scope")
-public class ScopeJpa {
+@Table(name = "spring_scope")
+public class ScopeJpa extends Auditable {
 
-  @Id @Indexed private String id;
-  private String name;
-  private String description;
+    private static final long serialVersionUID = 1L;
 
-  @Indexed private String value;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    private Long id;
+
+    private String name;
+
+    private String description;
+
+    private String value;
+
+    public ScopeJpa(
+            Date createdAt,
+            Date lastModified,
+            String createdBy,
+            String lastModifiedBy,
+            Long id,
+            String name,
+            String description,
+            String value) {
+        super(createdAt, lastModified, createdBy, lastModifiedBy);
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.value = value;
+    }
 }

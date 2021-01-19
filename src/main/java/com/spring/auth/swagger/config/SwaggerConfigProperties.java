@@ -4,48 +4,52 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Data
-@Configuration("swaggerConfigProperties")
+@Configuration
 public class SwaggerConfigProperties {
-  @Value("${api.version}")
-  private String apiVersion;
 
-  @Value("${swagger.enabled}")
-  private String enabled = "false";
+    @Value("${api.version}")
+    private String apiVersion;
 
-  @Value("${swagger.title}")
-  private String title;
+    @Value("${swagger.enabled}")
+    private String enabled = "false";
 
-  @Value("${swagger.description}")
-  private String description;
+    @Value("${swagger.title}")
+    private String title;
 
-  @Value("${swagger.useDefaultResponseMessages}")
-  private String useDefaultResponseMessages;
+    @Value("${swagger.description}")
+    private String description;
 
-  @Value("${swagger.enableUrlTemplating}")
-  private String enableUrlTemplating;
+    @Value("${swagger.useDefaultResponseMessages}")
+    private String useDefaultResponseMessages;
 
-  @Value("${swagger.deepLinking}")
-  private String deepLinking;
+    @Value("${swagger.enableUrlTemplating}")
+    private String enableUrlTemplating;
 
-  @Value("${swagger.defaultModelsExpandDepth}")
-  private String defaultModelsExpandDepth;
+    @Value("${swagger.deepLinking}")
+    private String deepLinking;
 
-  @Value("${swagger.defaultModelExpandDepth}")
-  private String defaultModelExpandDepth;
+    @Value("${swagger.defaultModelsExpandDepth}")
+    private String defaultModelsExpandDepth;
 
-  @Value("${swagger.displayOperationId}")
-  private String displayOperationId;
+    @Value("${swagger.defaultModelExpandDepth}")
+    private String defaultModelExpandDepth;
 
-  @Value("${swagger.displayRequestDuration}")
-  private String displayRequestDuration;
+    @Value("${swagger.displayOperationId}")
+    private String displayOperationId;
 
-  @Value("${swagger.filter}")
-  private String filter;
+    @Value("${swagger.displayRequestDuration}")
+    private String displayRequestDuration;
 
-  @Value("${swagger.maxDisplayedTags}")
-  private String maxDisplayedTags;
+    @Value("${swagger.filter}")
+    private String filter;
 
-  @Value("${swagger.showExtensions}")
-  private String showExtensions;
+    @Value("${swagger.maxDisplayedTags}")
+    private String maxDisplayedTags;
+
+    @Value("${swagger.showExtensions}")
+    private String showExtensions;
 }

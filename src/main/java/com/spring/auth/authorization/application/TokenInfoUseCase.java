@@ -2,17 +2,19 @@ package com.spring.auth.authorization.application;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.spring.auth.anotations.components.UseCase;
-import com.spring.auth.authorization.application.ports.in.TokenInfoPort;
+import com.spring.auth.authorization.application.ports.TokenInfoPort;
 import com.spring.auth.authorization.domain.TokenInfo;
-import com.spring.auth.exceptions.application.InvalidTokenException;
-import com.spring.auth.exceptions.application.NotFoundException;
-import com.spring.auth.exceptions.application.UnknownTokenFormatException;
-import com.spring.auth.google.application.ports.out.GoogleInfoPort;
-import com.spring.auth.session.application.ports.out.FindSessionByTokenPort;
+import com.spring.auth.client.domain.Client;
+import com.spring.auth.client.infrastructure.repositories.ports.FindClientPort;
+import com.spring.auth.exceptions.application.*;
+import com.spring.auth.google.application.ports.GoogleLoginPort;
+import com.spring.auth.google.infrastructure.repositories.ports.GoogleGetInfoPort;
 import com.spring.auth.session.domain.Session;
-import com.spring.auth.shared.util.RegexUtil;
-import com.spring.auth.shared.util.TokenUtil;
-import com.spring.auth.shared.util.TokenUtil.JwtWrapper;
+import com.spring.auth.session.infrastructure.repositories.ports.FindSessionPort;
+import com.spring.auth.user.domain.User;
+import com.spring.auth.util.RegexUtil;
+import com.spring.auth.util.TokenUtil;
+import com.spring.auth.util.TokenUtil.JwtWrapper;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
@@ -20,68 +22,118 @@ import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UseCase
 public class TokenInfoUseCase implements TokenInfoPort {
 
-  @Value("${server.auth.secret-key}")
-  private String secretKey;
+    @Value("${server.auth.secret-key}")
+    private String secretKey;
 
-  private FindSessionByTokenPort findSessionByTokenPort;
-  private GoogleInfoPort googleInfoPort;
+    private final FindSessionPort findSessionPort;
+    private final GoogleGetInfoPort googleGetInfoPort;
+    private final FindClientPort findClientPort;
+    private final GoogleLoginPort googleLoginPort;
 
-  public TokenInfoUseCase(
-      FindSessionByTokenPort findSessionByTokenPort, GoogleInfoPort googleInfoPort) {
-    this.findSessionByTokenPort = findSessionByTokenPort;
-    this.googleInfoPort = googleInfoPort;
-  }
-
-  @Override
-  public TokenInfo tokenInfo(final String token)
-      throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
-          GeneralSecurityException, IOException {
-
-    if (RegexUtil.isSessionToken(token)) {
-      return getSessionTokenInfo(token);
+    public TokenInfoUseCase(
+            FindSessionPort findSessionPort,
+            GoogleGetInfoPort googleGetInfoPort,
+            FindClientPort findClientPort,
+            GoogleLoginPort googleLoginPort) {
+        this.findSessionPort = findSessionPort;
+        this.googleGetInfoPort = googleGetInfoPort;
+        this.findClientPort = findClientPort;
+        this.googleLoginPort = googleLoginPort;
     }
 
-    if (RegexUtil.isBearerJwt(token)) {
-      String tokenWithoutPrefix = TokenUtil.removeBearerPrefix(token);
-      return getJwtTokenInfo(tokenWithoutPrefix);
+    @Override
+    public TokenInfo tokenInfo(final String token, Long clientId)
+            throws NotFoundException, UnknownTokenFormatException, InvalidTokenException,
+            GeneralSecurityException, IOException, GoogleGetInfoException,
+            EmailDoesNotExistsException, LockedUserException, DuplicatedKeyException,
+            InfiniteLoopException {
+
+        // using client_id
+        if (clientId != null) { // client_id
+            Client client = findClientPort.findByClientId(clientId);
+            if (RegexUtil.isBearerJwt(token)) {
+                return getBearerJwtTokenInfo(token, client.getClientSecret());
+            }
+
+            if (RegexUtil.isGoogleJwt(token)) {
+                return getGoogleTokenInfo(token, client.getGoogleClientId());
+            }
+        }
+
+        // not using client_id
+        if (RegexUtil.isSessionToken(token)) {
+            return getSessionTokenInfo(token);
+        }
+
+        if (RegexUtil.isBearerJwt(token)) {
+            return getBearerJwtTokenInfo(token);
+        }
+
+        if (RegexUtil.isGoogleJwt(token)) {
+            return getGoogleTokenInfo(token);
+        }
+
+        throw new UnknownTokenFormatException("unknown token format for token: " + token);
     }
 
-    if (RegexUtil.isGoogleJwt(token)) {
-      String tokenWithoutPrefix = TokenUtil.removeGooglePrefix(token);
-      return getGoogleTokenInfo(tokenWithoutPrefix);
+    private TokenInfo getGoogleTokenInfo(String token)
+            throws GeneralSecurityException, IOException, GoogleGetInfoException,
+            EmailDoesNotExistsException, LockedUserException, InfiniteLoopException,
+            NotFoundException, DuplicatedKeyException {
+        String tokenWithoutPrefix = TokenUtil.removeGooglePrefix(token);
+        GoogleIdToken.Payload payload = googleGetInfoPort.get(tokenWithoutPrefix);
+        return getGooglePayloadInfo(token, payload);
     }
 
-    throw new UnknownTokenFormatException("unknown token format for token: " + token);
-  }
+    private TokenInfo getGoogleTokenInfo(String token, String googleClientid)
+            throws GeneralSecurityException, IOException, GoogleGetInfoException,
+            EmailDoesNotExistsException, LockedUserException, InfiniteLoopException,
+            NotFoundException, DuplicatedKeyException {
+        String tokenWithoutPrefix = TokenUtil.removeGooglePrefix(token);
+        GoogleIdToken.Payload payload = googleGetInfoPort.get(tokenWithoutPrefix, googleClientid);
+        return getGooglePayloadInfo(token, payload);
+    }
 
-  private TokenInfo getGoogleTokenInfo(String token) throws GeneralSecurityException, IOException {
-    final GoogleIdToken.Payload payload = googleInfoPort.get(token);
-    final Date issuedAt = new Date(payload.getIssuedAtTimeSeconds() * 1000);
-    final Date expiration =
-        new Date(System.currentTimeMillis() + (payload.getExpirationTimeSeconds() + 1000));
-    final String userId = payload.getEmail();
-    return new TokenInfo(TokenUtil.addGooglePrefix(token), issuedAt, expiration, userId);
-  }
+    private TokenInfo getGooglePayloadInfo(String token, GoogleIdToken.Payload payload)
+            throws NotFoundException, LockedUserException, EmailDoesNotExistsException,
+            DuplicatedKeyException, InfiniteLoopException {
+        User user = googleLoginPort.login(payload);
+        Date issuedAt = new Date(payload.getIssuedAtTimeSeconds() * 1000);
+        Date expiration = new Date(payload.getExpirationTimeSeconds() * 1000);
+        Long userId = user.getId();
+        String googleTokenWithPrefix = TokenUtil.addGooglePrefix(token);
+        return new TokenInfo(googleTokenWithPrefix, issuedAt, expiration, userId);
+    }
 
-  private TokenInfo getJwtTokenInfo(String token) throws InvalidTokenException {
-    final JwtWrapper jwtWrapper = TokenUtil.getValues(token, secretKey);
-    final Date issuedAt = jwtWrapper.getIssuedAt();
-    final Date expiration = jwtWrapper.getExpiration();
-    final String userId = jwtWrapper.getUserId();
-    final List<String> roles = jwtWrapper.getRoles();
-    final List<String> scopes = jwtWrapper.getScopes();
-    return new TokenInfo(
-        TokenUtil.addBearerPrefix(token), issuedAt, expiration, userId, roles, scopes);
-  }
+    private TokenInfo getBearerJwtTokenInfo(String token) throws InvalidTokenException {
+        return getBearerJwtTokenInfo(token, this.secretKey);
+    }
 
-  private TokenInfo getSessionTokenInfo(String token) throws NotFoundException {
-    final Session session = findSessionByTokenPort.find(token);
-    final Date issuedAt = session.getIssuedAt();
-    final Date expiration = session.getExpiration();
-    final String userId = session.getUserId();
-    return new TokenInfo(TokenUtil.addBearerPrefix(token), issuedAt, expiration, userId);
-  }
+    private TokenInfo getBearerJwtTokenInfo(String token, String secretKey)
+            throws InvalidTokenException {
+        String tokenWithoutPrefix = TokenUtil.removeBearerPrefix(token);
+        JwtWrapper jwtWrapper = TokenUtil.getValues(tokenWithoutPrefix, secretKey);
+        Date issuedAt = jwtWrapper.getIssuedAt();
+        Date expiration = jwtWrapper.getExpiration();
+        Long userId = jwtWrapper.getUserId();
+        List<String> roles = jwtWrapper.getRoles();
+        List<String> scopes = jwtWrapper.getScopes();
+        return new TokenInfo(token, issuedAt, expiration, userId, roles, scopes);
+    }
+
+    private TokenInfo getSessionTokenInfo(String token) throws NotFoundException {
+        String tokenWithoutPrefix = TokenUtil.removeBearerPrefix(token);
+        Session session = findSessionPort.findByToken(tokenWithoutPrefix);
+        Date issuedAt = session.getIssuedAt();
+        Date expiration = session.getExpiration();
+        Long userId = session.getUserId();
+        String tokenWithPrefix = TokenUtil.addBearerPrefix(token);
+        return new TokenInfo(tokenWithPrefix, issuedAt, expiration, userId);
+    }
 }

@@ -3,7 +3,7 @@ package com.spring.auth.user.infrastructure.controllers;
 import com.spring.auth.anotations.components.controllers.UserController;
 import com.spring.auth.exceptions.application.DuplicatedKeyException;
 import com.spring.auth.exceptions.application.NotFoundException;
-import com.spring.auth.user.application.ports.in.AddRolesToUserPort;
+import com.spring.auth.user.application.ports.AddRolesToUserPort;
 import com.spring.auth.user.domain.User;
 import com.spring.auth.user.infrastructure.dto.input.AddRolesToUserInputDto;
 import com.spring.auth.user.infrastructure.dto.output.AddRolesToUserOutputDto;
@@ -23,31 +23,34 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UserController
 @AllArgsConstructor
 @Validated
 public class AddRolesToUserController {
 
-  private AddRolesToUserPort addRolesToUserPort;
+    private final AddRolesToUserPort addRolesToUserPort;
 
-  @ApiOperation(value = "Add roles to user", notes = "Añade roles a un usuario")
-  @ApiImplicitParams({
-    @ApiImplicitParam(
-        name = "Authorization",
-        value = "jwt",
-        dataType = "string",
-        paramType = "header",
-        required = true)
-  })
-  @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping("/{userId}/roles")
-  @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
-  public AddRolesToUserOutputDto findAll(
-      @PathVariable @NotEmpty String userId, // todo: validate userId format
-      @RequestBody @Valid AddRolesToUserInputDto addRolesToUserInputDto)
-      throws DuplicatedKeyException, NotFoundException {
-    List<String> roleIds = addRolesToUserInputDto.getRoleIds();
-    User updatedUser = addRolesToUserPort.add(userId, roleIds);
-    return new AddRolesToUserOutputDto(updatedUser);
-  }
+    @ApiOperation(value = "Add roles to user", notes = "Añade roles a un usuario")
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "Authorization",
+                    value = "jwt",
+                    dataType = "string",
+                    paramType = "header",
+                    required = true)
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{userId}/roles")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','UPDATE')")
+    public AddRolesToUserOutputDto findAll(
+            @PathVariable @NotEmpty Long userId, // todo: validate userId format
+            @RequestBody @Valid AddRolesToUserInputDto addRolesToUserInputDto)
+            throws DuplicatedKeyException, NotFoundException {
+        List<Long> roleIds = addRolesToUserInputDto.getRoleIds();
+        User updatedUser = addRolesToUserPort.add(userId, roleIds);
+        return new AddRolesToUserOutputDto(updatedUser);
+    }
 }

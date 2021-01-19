@@ -1,37 +1,41 @@
 package com.spring.auth.authorization.application;
 
 import com.spring.auth.anotations.components.UseCase;
-import com.spring.auth.authorization.application.ports.in.LoginUserPort;
+import com.spring.auth.authorization.application.ports.LoginUserPort;
 import com.spring.auth.exceptions.application.DuplicatedKeyException;
+import com.spring.auth.exceptions.application.LockedUserException;
 import com.spring.auth.exceptions.application.NotFoundException;
 import com.spring.auth.exceptions.application.WrongPasswordException;
-import com.spring.auth.session.application.ports.out.CreateSessionPort;
 import com.spring.auth.session.domain.Session;
-import com.spring.auth.user.application.ports.out.FindUserByUserNameOrEmailPort;
+import com.spring.auth.session.infrastructure.repositories.ports.CreateSessionPort;
 import com.spring.auth.user.domain.User;
+import com.spring.auth.user.infrastructure.repositories.ports.FindUserPort;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UseCase
 @AllArgsConstructor
 public class LoginUseCase implements LoginUserPort {
 
-  private FindUserByUserNameOrEmailPort findUserByUserNameOrEmailPort;
-  private CreateSessionPort createSessionPort;
+    private final FindUserPort findUserPort;
+    private final CreateSessionPort createSessionPort;
 
-  @Override
-  @Transactional(rollbackFor = Exception.class)
-  public Session login(final String username, final String email, final String password)
-      throws NotFoundException, WrongPasswordException, DuplicatedKeyException {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Session login(String username, String email, String password)
+            throws NotFoundException, DuplicatedKeyException, LockedUserException, WrongPasswordException {
 
-    // findAll the user trying to login
-    final User user = findUserByUserNameOrEmailPort.find(username, email);
+        User user = findUserPort.findByUsernameOrEmail(username, email);
+        if (!user.doPasswordsMatch(password)) throw new WrongPasswordException("invalid password");
 
-    // check if its de correct password
-    if (!user.doPasswordsMatch(password)) throw new WrongPasswordException("invalid password");
+        // check if the user is locked
+        if (user.isLocked()) throw new LockedUserException("this user is locked");
 
-    // creating session
-    final Session session = new Session(user.getId());
-    return createSessionPort.create(session);
-  }
+        // creating session
+        Session session = new Session(user.getId());
+        return createSessionPort.create(session);
+    }
 }

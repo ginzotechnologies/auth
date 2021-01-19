@@ -1,67 +1,91 @@
 package com.spring.auth.authorization.application;
 
 import com.spring.auth.anotations.components.UseCase;
-import com.spring.auth.authorization.application.ports.in.AccessPort;
-import com.spring.auth.authorization.domain.JwtWrapper;
+import com.spring.auth.authorization.application.ports.AccessPort;
+import com.spring.auth.events.ports.PublishSessionUsedEventPort;
 import com.spring.auth.exceptions.application.InvalidTokenException;
+import com.spring.auth.exceptions.application.LockedUserException;
 import com.spring.auth.exceptions.application.NotFoundException;
-import com.spring.auth.session.application.ports.out.DeleteSessionPort;
-import com.spring.auth.session.application.ports.out.FindSessionByTokenPort;
-import com.spring.auth.session.application.ports.out.RefreshSessionPort;
+import com.spring.auth.role.domain.Role;
+import com.spring.auth.scope.domain.Scope;
 import com.spring.auth.session.domain.Session;
-import com.spring.auth.shared.util.TokenUtil;
-import com.spring.auth.user.application.ports.out.FindUserByIdPort;
+import com.spring.auth.session.infrastructure.repositories.ports.DeleteSessionPort;
+import com.spring.auth.session.infrastructure.repositories.ports.FindSessionPort;
+import com.spring.auth.session.infrastructure.repositories.ports.RefreshSessionPort;
 import com.spring.auth.user.domain.User;
+import com.spring.auth.user.infrastructure.repositories.ports.FindUserPort;
+import com.spring.auth.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @UseCase
 public class AccessUseCase implements AccessPort {
 
-  @Value("${server.auth.secret-key}")
-  private String secretKey;
+    @Value("${server.auth.secret-key}")
+    private String secretKey;
 
-  private FindUserByIdPort findUserByIdPort;
-  private FindSessionByTokenPort findSessionByTokenPort;
-  private RefreshSessionPort refreshSessionPort;
-  private DeleteSessionPort deleteSessionPort;
+    @Value(("${server.auth.secret-expiration}"))
+    private long expiration;
 
-  public AccessUseCase(
-      FindUserByIdPort findUserByIdPort,
-      FindSessionByTokenPort findSessionByTokenPort,
-      RefreshSessionPort refreshSessionPort,
-      DeleteSessionPort deleteSessionPort) {
-    this.findUserByIdPort = findUserByIdPort;
-    this.findSessionByTokenPort = findSessionByTokenPort;
-    this.refreshSessionPort = refreshSessionPort;
-    this.deleteSessionPort = deleteSessionPort;
-  }
+    private final FindUserPort findUserPort;
+    private final FindSessionPort findSessionPort;
+    private final DeleteSessionPort deleteSessionPort;
+    private final PublishSessionUsedEventPort publishSessionUsedEventPort;
 
-  @Override
-  public JwtWrapper access(final String token) throws NotFoundException, InvalidTokenException {
-
-    // findAll session that will ve used for the jwt
-    final Session session = findSessionByTokenPort.find(token);
-
-    // if is not valid should be removed
-    if (!session.isValid()) {
-      deleteSessionPort.delete(session);
-      throw new InvalidTokenException("token not valid");
+    public AccessUseCase(
+            FindUserPort findUserPort,
+            FindSessionPort findSessionPort,
+            RefreshSessionPort refreshSessionPort,
+            DeleteSessionPort deleteSessionPort,
+            PublishSessionUsedEventPort publishSessionUsedEventPort) {
+        this.findUserPort = findUserPort;
+        this.findSessionPort = findSessionPort;
+        this.deleteSessionPort = deleteSessionPort;
+        this.publishSessionUsedEventPort = publishSessionUsedEventPort;
     }
 
-    // when a session is used should get new expiration time
-    refreshSessionPort.refresh(session);
+    @Override
+    public TokenUtil.JwtWrapper access(
+            String token, List<String> roleValues, List<String> scopeValues)
+            throws NotFoundException, InvalidTokenException, LockedUserException {
+        // findAll session that will ve used for the jwt
+        Session session = findSessionPort.findByToken(token);
+        // if is not valid should be removed
+        checkValidSession(session);
+        // need the user data for the jwt generation
+        User user = findUserPort.findById(session.getUserId());
+        // check if the user is locked
+        if (user.isLocked()) throw new LockedUserException("this user is locked");
+        // session used event
+        publishSessionUsedEventPort.publish(session);
+        // jwt generation
+        return TokenUtil.generateBearerJwt(user, secretKey, expiration, roleValues, scopeValues);
+    }
 
-    // need the user data for the jwt generation
-    final User user = findUserByIdPort.find(session.getUserId());
+    @Override
+    public TokenUtil.JwtWrapper access(Long userId)
+            throws NotFoundException, InvalidTokenException, LockedUserException {
+        User user = findUserPort.findById(userId);
 
-    // jwt generation
-    final TokenUtil.JwtWrapper jwtWrapper = TokenUtil.generateBearerJwt(user, secretKey);
+        // check if the user is locked
+        if (user.isLocked()) throw new LockedUserException("this user is locked");
 
-    final String jwt = jwtWrapper.getToken();
-    final Date issuedAt = jwtWrapper.getIssuedAt();
-    final Date expiration = jwtWrapper.getExpiration();
-    return new JwtWrapper(jwt, issuedAt, expiration, user.getId());
-  }
+        List<String> roles = user.getRoles().stream().map(Role::getValue).collect(Collectors.toList());
+        List<String> scopes = user.getScopes().stream().map(Scope::getValue).collect(Collectors.toList());
+
+        // jwt generation
+        return TokenUtil.generateBearerJwt(user, secretKey, expiration, roles, scopes);
+    }
+
+    private void checkValidSession(Session session) throws InvalidTokenException {
+        if (session.isValid()) return;
+
+        deleteSessionPort.delete(session);
+        throw new InvalidTokenException("token not valid");
+    }
 }

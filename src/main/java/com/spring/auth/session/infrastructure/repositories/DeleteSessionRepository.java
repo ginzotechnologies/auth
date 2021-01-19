@@ -1,27 +1,39 @@
 package com.spring.auth.session.infrastructure.repositories;
 
-import com.spring.auth.session.application.ports.out.DeleteSessionPort;
+import com.spring.auth.exceptions.application.NotFoundException;
 import com.spring.auth.session.domain.Session;
+import com.spring.auth.session.domain.SessionJpa;
 import com.spring.auth.session.infrastructure.repositories.jpa.SessionRepositoryJpa;
+import com.spring.auth.session.infrastructure.repositories.ports.DeleteSessionPort;
+import com.spring.auth.session.infrastructure.repositories.ports.FindSessionPort;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.security.InvalidParameterException;
-import java.util.Objects;
-
+/**
+ * @author diegotobalina created on 24/06/2020
+ */
 @Repository
 @AllArgsConstructor
 public class DeleteSessionRepository implements DeleteSessionPort {
 
-  private SessionRepositoryJpa sessionRepositoryJpa;
+    private final SessionRepositoryJpa sessionRepositoryJpa;
+    private final FindSessionPort findSessionPort;
 
-  @Override
-  public void delete(final Session session) {
-    if (Objects.isNull(session)) throw new InvalidParameterException("session must not be null");
-    if (Objects.isNull(session.getId()))
-      throw new InvalidParameterException("session id must not be null");
-    if (Objects.isNull(session.getToken()))
-      throw new InvalidParameterException("session token must not be null");
-    this.sessionRepositoryJpa.deleteById(session.getId());
-  }
+    @Override
+    public void deleteByUserId(Long userId) {
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("userId").is(userId));
+//        mongoTemplate.remove(query, SessionJpa.class);
+    }
+
+    @Override
+    public void delete(final Session session) {
+        this.sessionRepositoryJpa.deleteById(session.getId().toString());
+    }
+
+    @Override
+    public void delete(String token) throws NotFoundException {
+        Session session = findSessionPort.findByToken(token);
+        this.delete(session);
+    }
 }

@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Api(tags = "Roles", description = "Roles endpoints")
 @RequestMapping("${api.prefix}/roles")
 public @interface RoleController {
-  @AliasFor(annotation = Component.class)
-  String value() default "";
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 }

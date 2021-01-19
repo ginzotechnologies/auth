@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Api(tags = "Users", description = "Users endpoints")
 @RequestMapping("${api.prefix}/users")
 public @interface UserController {
-  @AliasFor(annotation = Component.class)
-  String value() default "";
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 }
