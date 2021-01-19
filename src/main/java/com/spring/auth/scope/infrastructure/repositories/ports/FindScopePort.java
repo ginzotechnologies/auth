@@ -16,7 +16,7 @@ public interface FindScopePort {
 
     List<Scope> findAll();
 
-    Scope findById(String scopeId) throws NotFoundException;
+    Scope findById(Long scopeId) throws NotFoundException;
 
     Scope findByValue(String value) throws NotFoundException;
 }

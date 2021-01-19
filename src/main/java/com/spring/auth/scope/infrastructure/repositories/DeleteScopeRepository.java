@@ -32,14 +32,14 @@ public class DeleteScopeRepository implements DeleteScopePort {
     }
 
     @Override
-    public Scope delete(String scopeId) throws NotFoundException {
+    public Scope delete(Long scopeId) throws NotFoundException {
         Scope scope = findScopePort.findById(scopeId);
         return delete(scope);
     }
 
     private Scope deleteScope(Scope scope) {
         ScopeJpa scopeJpa = ScopeMapper.parse(scope);
-        scopeRepositoryJpa.deleteById(scopeJpa.getId().toString());
+        scopeRepositoryJpa.deleteById(scopeJpa.getId());
         return ScopeMapper.parse(scopeJpa);
     }
 }

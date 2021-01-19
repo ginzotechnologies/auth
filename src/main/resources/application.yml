@@ -21,6 +21,29 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
 
+  # DATASOURCE CONFIG
+  datasource:
+    url: jdbc:postgresql://server_url:5435/auth_db
+    username: auth_usr
+    password: password
+    initialization-mode: always
+    #schema: classpath:/schema.sql
+    continue-on-error: true
+    driver-class-name: org.postgresql.Driver
+
+  # SPRING DATA JPA CONFIG
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL92Dialect
+        format_sql: true
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL92Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
 # LOGS
 logging:
   level:

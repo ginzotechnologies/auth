@@ -9,5 +9,5 @@ import com.spring.auth.scope.domain.Scope;
 public interface DeleteScopePort {
     Scope delete(Scope scope);
 
-    Scope delete(String scopeId) throws NotFoundException;
+    Scope delete(Long scopeId) throws NotFoundException;
 }

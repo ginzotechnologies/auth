@@ -37,9 +37,7 @@ public class DeleteScopeController {
     })
     @DeleteMapping("/{scopeId}")
     @PreAuthorize("hasRole('ADMIN') and hasPermission('hasAccess','DELETE')")
-    public DeleteScopeOutputDto create(
-            @PathVariable @NotEmpty String scopeId) // todo: validate scopeId format
-            throws NotFoundException {
+    public DeleteScopeOutputDto create(@PathVariable @NotEmpty Long scopeId) throws NotFoundException { // todo: validate scopeId format
         Scope deletedScope = deleteScopePort.delete(scopeId);
         return new DeleteScopeOutputDto(deletedScope);
     }

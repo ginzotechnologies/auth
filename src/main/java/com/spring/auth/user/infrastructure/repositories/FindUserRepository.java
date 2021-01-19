@@ -90,7 +90,7 @@ public class FindUserRepository implements FindUserPort {
 
     @Override
     public User findById(Long id) throws NotFoundException {
-        Optional<UserJpa> optional = userRepositoryJpa.findById(id.toString());
+        Optional<UserJpa> optional = userRepositoryJpa.findById(id);
         UserJpa userJpa = optional.orElseThrow(() -> new NotFoundException("user not found by id: " + id));
         return UserMapper.parse(userJpa);
     }

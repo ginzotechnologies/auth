@@ -27,7 +27,7 @@ public class DeleteRoleRepository implements DeleteRolePort {
     @Transactional(rollbackFor = Exception.class)
     public Role delete(Role role) {
         RoleJpa roleJpa = RoleMapper.parse(role);
-        roleRepositoryJpa.deleteById(roleJpa.getId().toString());
+        roleRepositoryJpa.deleteById(roleJpa.getId());
         Role deletedRole = RoleMapper.parse(roleJpa);
         publishRoleDeletedEventPort.publish(deletedRole);
         return deletedRole;

@@ -59,7 +59,7 @@ public class FindScopeRepository implements FindScopePort {
     }
 
     @Override
-    public Scope findById(String scopeId) throws NotFoundException {
+    public Scope findById(Long scopeId) throws NotFoundException {
         Optional<ScopeJpa> optional = scopeRepositoryJpa.findById(scopeId);
         ScopeJpa scope =
                 optional.orElseThrow(() -> new NotFoundException("scope not found with id: " + scopeId));
