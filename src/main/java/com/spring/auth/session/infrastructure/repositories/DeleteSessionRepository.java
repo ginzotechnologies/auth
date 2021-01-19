@@ -28,7 +28,7 @@ public class DeleteSessionRepository implements DeleteSessionPort {
 
     @Override
     public void delete(final Session session) {
-        this.sessionRepositoryJpa.deleteById(session.getId().toString());
+        this.sessionRepositoryJpa.deleteById(session.getId());
     }
 
     @Override

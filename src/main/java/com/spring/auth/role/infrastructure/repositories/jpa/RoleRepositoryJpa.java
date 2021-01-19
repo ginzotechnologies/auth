@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author diegotobalina created on 24/06/2020
  */
 @Repository
-public interface RoleRepositoryJpa extends JpaRepository<RoleJpa, String> {
+public interface RoleRepositoryJpa extends JpaRepository<RoleJpa, Long> {
     Optional<RoleJpa> findByValue(String value);
 
     List<RoleJpa> findAllByScopesId(Long scopeId);

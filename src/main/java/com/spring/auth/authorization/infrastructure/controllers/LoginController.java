@@ -31,26 +31,24 @@ public class LoginController {
     private final LoginUserPort loginUserPort;
     private final AccessPort accessPort;
 
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 201, message = "Created"),
-                    @ApiResponse(code = 401, message = "Invalid credentials")
-            })
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "Created"),
+        @ApiResponse(code = 401, message = "Invalid credentials")
+    })
     @ApiOperation(
-            value = "Login",
-            notes = "Inicia sesión con el nombre de usuario o correo y la contraseña ")
+        value = "Login",
+        notes = "Inicia sesión con el nombre de usuario o correo y la contraseña "
+    )
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/login")
-    public LoginOutputDto login(@RequestBody @Valid final LoginInputDto loginInputDto)
-            throws Exception {
+    public LoginOutputDto login(@RequestBody @Valid final LoginInputDto loginInputDto) throws Exception {
         final String username = loginInputDto.getUsername();
         final String email = loginInputDto.getEmail();
         final String password = loginInputDto.getPassword();
         final Session session = loginUserPort.login(username, email, password);
         List<String> roleValues = loginInputDto.getRoles();
         List<String> scopeValues = loginInputDto.getScopes();
-        final TokenUtil.JwtWrapper access =
-                accessPort.access(session.getToken(), roleValues, scopeValues);
+        final TokenUtil.JwtWrapper access = accessPort.access(session.getToken(), roleValues, scopeValues);
         return new LoginOutputDto(session, access);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author diegotobalina created on 24/06/2020
  */
 @Repository
-public interface SessionRepositoryJpa extends JpaRepository<SessionJpa, String> {
+public interface SessionRepositoryJpa extends JpaRepository<SessionJpa, Long> {
     Optional<SessionJpa> findByToken(String value);
 
     List<SessionJpa> findAllByUserId(Long userId);

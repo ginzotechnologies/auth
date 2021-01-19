@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ScopeRepositoryJpa extends JpaRepository<ScopeJpa, String> {
+public interface ScopeRepositoryJpa extends JpaRepository<ScopeJpa, Long> {
     Optional<ScopeJpa> findByValue(String value);
 
     List<ScopeJpa> findAllByIdIn(List<Long> ids);

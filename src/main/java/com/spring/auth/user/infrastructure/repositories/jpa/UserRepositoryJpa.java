@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author diegotobalina created on 24/06/2020 Database operations for the UserJpa
  */
 @Repository
-public interface UserRepositoryJpa extends JpaRepository<UserJpa, String> {
+public interface UserRepositoryJpa extends JpaRepository<UserJpa, Long> {
 
     /**
      * Finds a user by the username

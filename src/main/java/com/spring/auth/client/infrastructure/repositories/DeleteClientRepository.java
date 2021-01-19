@@ -19,7 +19,7 @@ public class DeleteClientRepository implements DeleteClientPort {
     @Override
     public Client delete(Long clientId) throws DuplicatedKeyException, NotFoundException {
         Client client = findClientPort.findById(clientId);
-        clientRepositoryJpa.deleteById(clientId.toString());
+        clientRepositoryJpa.deleteById(clientId);
         return client;
     }
 }

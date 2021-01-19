@@ -67,7 +67,7 @@ public class FindRoleRepository implements FindRolePort {
 
     @Override
     public Role findById(Long roleId) throws NotFoundException {
-        Optional<RoleJpa> optional = roleRepositoryJpa.findById(roleId.toString());
+        Optional<RoleJpa> optional = roleRepositoryJpa.findById(roleId);
         RoleJpa roleJpa =
                 optional.orElseThrow(() -> new NotFoundException("role not found by id: " + roleId));
         return RoleMapper.parse(roleJpa);

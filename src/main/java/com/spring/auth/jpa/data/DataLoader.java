@@ -50,8 +50,7 @@ public class DataLoader implements ApplicationRunner {
         Scope updateScope = new Scope("Update scope admin", "Update scope for admins", "UPDATE");
         Scope deleteScope = new Scope("Delete scope admin", "Delete scope for admins", "DELETE");
         Scope readUserScope = new Scope("Read scope users", "Read scope for users", "READ_USER");
-        Scope updateUserScope =
-                new Scope("Update scope users", "Update scope for users", "UPDATE_USER");
+        Scope updateUserScope = new Scope("Update scope users", "Update scope for users", "UPDATE_USER");
 
         Scope createdReadScope = createScopePort.create(readScope);
         Scope createdCreateScope = createScopePort.create(createScope);

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ClientRepositoryJpa extends JpaRepository<ClientJpa, String> {
+public interface ClientRepositoryJpa extends JpaRepository<ClientJpa, Long> {
     boolean existsByClientIdInAndIdNotIn(List<Long> clientIds, List<Long> ids);
 
     Optional<ClientJpa> findByClientId(Long clientId);
